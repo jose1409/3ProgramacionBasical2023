@@ -14,12 +14,19 @@ print('INSTRUCCIONES\n'
       '        (igual a la apuesta inicial) y crear una segunda mano con la que jugar contra la banca\n'
       'DOBLAR:\n' 
       '       Puedes colocar una apuesta extra, igual a la apuesta inicial, a cambio de una sola carta más para tu mano, después de la cual te plantarás automáticamente\n')
-palos = ["♠", "♥", "♦","♣"]
-cartas = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-baraja = []
 
-for i in cartas:
-    for p in palos:
-        carta = (f'{i} de {p}')
-        baraja.append(carta)
-print(baraja)
+numeros = [1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],{1,2,3,4,5,6,7,8,9,10}
+
+j=random.randint(0,9)
+i=random.randint(0,3)
+print(f"El i es: {i}")     #Revisar
+print(f"El j es: {j}")     #Revisar
+
+if(i==0):
+    print(f"{numeros[i][j]} de Corazon")
+elif(i==1):
+    print(f"{numeros[i][j]} de Trebol")
+elif(i==2):
+    print(f"{numeros[i][j]} de Picas")
+else:
+    print(f"{numeros[i][j]} de Diamante")
