@@ -34,14 +34,19 @@ while True:
                             else:
                                 PIN_confirmacion = getpass('Ingrese nuevamente su PIN para confirmacion')
                                 if PIN == PIN_confirmacion:
+                                    time.sleep(0.5)
                                     limpiar_pantalla()
                                     print('El PIN ha sido creado exitosamente')
                                     os.mkdir(ID)
                                     print(f"el ID {ID} ha sido creado, volviendo al Menu Principal")
                                     archivo = open(os.path.join(ID, 'saldos.txt'), 'w')
                                     archivo.close()
+                                    #Modos de lectura en BibliotecaOS.py
+                                    archivo = open('usuarios_pines.txt', 'a')
+                                    archivo.write(f'{ID}\n')
+                                    archivo.write(f'{PIN}\n')
+                                    archivo.close()
                                     usuario_creado = True
-                                    
                                     break
                                 else:
                                     print('Error: El PIN de confirmacion no coincide, intente nuevamente')
