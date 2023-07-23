@@ -30,3 +30,4 @@ elif(i==2):
     print(f"{numeros[i][j]} de Picas")
 else:
     print(f"{numeros[i][j]} de Diamante")
+#hola como esta
