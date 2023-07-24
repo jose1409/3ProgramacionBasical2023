@@ -1,6 +1,8 @@
 import os
 import time
 from getpass import getpass
+
+from configuracion_avanzada import menu_configuracion_avanzada
 def limpiar_pantalla():
     if os.name == 'nt':  # Windows    #Toda la variable se refiese al sistema operativo windows(memorizable)
         os.system('cls')
@@ -69,6 +71,7 @@ while True:
         elif opcion == 2:
             numero1 = int(input('Digite el primer numero:'))   
         elif opcion == 3:
+            menu_configuracion_avanzada()
             numero1 = int(input('Digite el primer numero:'))
         elif opcion == 4:
             print('Gracias por visitar DreamWorld Casino, vuelva pronto')
