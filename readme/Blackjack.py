@@ -1,5 +1,26 @@
+import random
+import time
 dinero_temporal = 500
-from random import random
+numero_crupier = []
+palo_crupier = []
+numero_usuario = []
+palo_usuario = []
+def baraja():
+    numeros = [1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],{1,2,3,4,5,6,7,8,9,10}
+    numero_baraja = random.randint(0,9) #Este random me seleccionara un numero al azar
+    palo = random.randint(0,3) #Este random junto con la condicional me dira uno de los 4 palos
+    if(palo==0):
+        print(f"{numeros[palo][numero_baraja]} de Corazon")
+    elif(palo==1):
+        print(f"{numeros[palo][numero_baraja]} de Trebol")
+    elif(palo==2):
+        print(f"{numeros[palo][numero_baraja]} de Picas")
+    else:
+        print(f"{numeros[palo][numero_baraja]} de Diamante")
+    numero_baraja.array(numero_usuario)
+    palo.array(palo_usuario)
+    numero_baraja.array(numero_crupier)
+    palo.array(palo_crupier)
 print('INSTRUCCIONES\n'
       'El objetivo de cualquier mano de blackjack es derrotar a la banca\n'
       'Puedes ganar con una puntuación inferior a 22 cuando la mano de la banca supera los 21 puntos\n'
@@ -15,19 +36,15 @@ print('INSTRUCCIONES\n'
       'DOBLAR:\n' 
       '       Puedes colocar una apuesta extra, igual a la apuesta inicial, a cambio de una sola carta más para tu mano, después de la cual te plantarás automáticamente\n')
 
-numeros = [1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],{1,2,3,4,5,6,7,8,9,10}
-
-j=random.randint(0,9)
-i=random.randint(0,3)
-print(f"El i es: {i}")     #Revisar
-print(f"El j es: {j}")     #Revisar
-
-if(i==0):
-    print(f"{numeros[i][j]} de Corazon")
-elif(i==1):
-    print(f"{numeros[i][j]} de Trebol")
-elif(i==2):
-    print(f"{numeros[i][j]} de Picas")
+apuesta_minima = int(input('¿Cuanto desea apostar?'))
+if dinero_temporal < dinero_temporal:
+    print('Dinero insuficiente, ingrese otro monto')
 else:
-    print(f"{numeros[i][j]} de Diamante")
-#hola como esta
+    time.sleep(1.5)
+    baraja()         #usuario
+    time.sleep(1.5)
+    baraja()         #crupier
+    time.sleep(1.5)
+    baraja()         #usuario
+    time.sleep(1.5)
+    baraja()         #crupier oculto
