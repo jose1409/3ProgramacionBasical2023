@@ -5,6 +5,7 @@ def limpiar_pantalla():
     if os.name == 'nt':  # Windows    #Toda la variable se refiese al sistema operativo windows(memorizable)
         os.system('cls')
 # Menu Principal
+os.chdir('/Users/Usuario/OneDrive/Documentos/GitHub/3ProgramacionBasical2023/readme/')
 while True:
     try:
         print('---Bienvenido a DreamWorld Casino---\n1. Registro de usuario nuevo\n2. DreamWorld Casino\n3. Configuracion avanzada\n''4. Salir')
@@ -21,7 +22,7 @@ while True:
                     print('Error: El ID debe tener al menos 5 digitos, intente nuevamente')
                 # Verificacion para saber si el Usuario ya existe y creacion de carpeta en el caso que no
                 else:                     
-                    if(os.path.exists(ID)):
+                    if os.path.exists(ID):
                         print(f"El usuario {ID} ya existe, intente con otro ID")
                     else:
                         time.sleep(0.5)
