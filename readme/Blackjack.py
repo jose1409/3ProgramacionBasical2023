@@ -5,25 +5,53 @@ numero_crupier = []
 palo_crupier = []
 numero_usuario = []
 palo_usuario = []
+suma_usuario = 0
+suma_crupier = 0
+def obtener_valor_carta(numero, mano):
+    if numero in ['J', 'Q', 'K']:
+        return 10
+    elif numero == 'A':
+        # Si sumar 11 no lleva a una bancarrota (más de 21 puntos), se considera 11, en caso contrario, se considera 1.
+        return 11 if sum(mano) + 11 <= 21 else 1
+    return numero
+
 def baraja():
-    numeros = [1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],{1,2,3,4,5,6,7,8,9,10}
-    numero_baraja = random.randint(0,9) #Este random me seleccionara un numero al azar
-    palo = random.randint(0,3) #Este random junto con la condicional me dira uno de los 4 palos
-    if(palo==0):
-        print(f"{numeros[palo][numero_baraja]} de Corazon")
-    elif(palo==1):
-        print(f"{numeros[palo][numero_baraja]} de Trebol")
-    elif(palo==2):
-        print(f"{numeros[palo][numero_baraja]} de Picas")
-    else:
-        print(f"{numeros[palo][numero_baraja]} de Diamante")
-    numero_baraja.array(numero_usuario)
-    palo.array(palo_usuario)
-    numero_baraja.array(numero_crupier)
-    palo.array(palo_crupier)
+    palos = ['Corazon', 'Trebol', 'Picas', 'Diamante']
+    numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
+    palo = random.randint(0, 3)
+    numero_baraja = random.randint(0, 12)
+
+    return numeros[numero_baraja], palos[palo]
+
+def repartir_cartas():
+    # Primera carta para el usuario
+    numero, palo = baraja()
+    valor_carta = obtener_valor_carta(numero, numero_usuario)
+    numero_usuario.append(valor_carta)
+    palo_usuario.append(palo)
+
+    # Segunda carta para el crupier
+    numero, palo = baraja()
+    valor_carta = obtener_valor_carta(numero, numero_crupier)
+    numero_crupier.append(valor_carta)
+    palo_crupier.append(palo)
+
+    # Tercera carta para el usuario
+    numero, palo = baraja()
+    valor_carta = obtener_valor_carta(numero, numero_usuario)
+    numero_usuario.append(valor_carta)
+    palo_usuario.append(palo)
+
+    # Cuarta carta para el Crupier (Oculta)
+    numero, palo = baraja()
+    valor_carta = obtener_valor_carta(numero, numero_crupier)
+    numero_crupier.append(valor_carta)
+    palo_crupier.append(palo)
+
+    #Instrucciones del juego/Menu
 print('INSTRUCCIONES\n'
       'El objetivo de cualquier mano de blackjack es derrotar a la banca\n'
-      'Puedes ganar con una puntuación inferior a 22 cuando la mano de la banca supera los 21 puntos\n'
+      'Puedes ganar con una puntuación igual o menor a 21 cuando la mano de la banca supera los 21 puntos o este mas alejado\n'
       'Cuando el valor total de tu mano es de 22 o más, esto se conoce comúnmente como "bancarrota", y automáticamente perderás cualquier dinero apostado\n'
       '\n'
       'LIGAR:\n' 
@@ -35,16 +63,24 @@ print('INSTRUCCIONES\n'
       '        (igual a la apuesta inicial) y crear una segunda mano con la que jugar contra la banca\n'
       'DOBLAR:\n' 
       '       Puedes colocar una apuesta extra, igual a la apuesta inicial, a cambio de una sola carta más para tu mano, después de la cual te plantarás automáticamente\n')
-
 apuesta_minima = int(input('¿Cuanto desea apostar?'))
-if dinero_temporal < dinero_temporal:
+    #Dinero temporal para probar el juego
+if dinero_temporal < apuesta_minima:
     print('Dinero insuficiente, ingrese otro monto')
+    
+    #Reparticion de cartas
 else:
-    time.sleep(1.5)
-    baraja()         #usuario
-    time.sleep(1.5)
-    baraja()         #crupier
-    time.sleep(1.5)
-    baraja()         #usuario
-    time.sleep(1.5)
-    baraja()         #crupier oculto
+    repartir_cartas()
+    #Cartas del usuario
+    for i in range(len(numero_usuario)):
+        print(f"{numero_usuario[i]} de {palo_usuario[i]}")
+        time.sleep(1.2)
+
+    #Cartas del Crupier
+    print('\nCarta Oculta')
+    time.sleep(1.2)
+    for i in range(1, len(numero_crupier)):
+        print(f"{numero_crupier[i]} de {palo_crupier[i]}")
+
+
+
