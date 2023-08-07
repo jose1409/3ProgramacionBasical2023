@@ -3,6 +3,7 @@ import os
 
 # PIN especial definido por el equipo para permitir acceso al menú
 specialPIN = "2023"
+usuarios_pines_file = "usuarios_pines.txt"
 
 def getUserInput(prompt):
     return input(prompt).strip()
@@ -20,12 +21,39 @@ def authenticateUser():
         print("El PIN es incorrecto. Sus intentos restantes son:", attempts)
     return False
 
+def cargar_usuarios_pines(file_path):
+    usuarios_pines = {}
+    try:
+        with open(file_path, 'r') as file: 
+
+            #print(file.read ())
+            print(file.readline ())
+            print(file.readline ())
+    
+            print(file.readlines ())
+            for line in file: # en lugar de line hacer un range sobre file, se ignora la primera linea y se procesa luego en grupos de usuarios
+                usuario = line.strip()
+                usuarios_pines[usuario] = ""
+    except FileNotFoundError:
+        pass
+    return usuarios_pines
+
+def guardar_usuarios_pines(file_path, usuarios_pines):
+    with open(file_path, 'w') as file:
+        for usuario, pin in usuarios_pines.items():
+            file.write(f"{pin},{usuario}\n")
+
 def deleteUser(userID):
-    # apartado para poder eliminar un usuario
-    print(f"El usuario con el siguiente ID {userID} ha sido eliminado.")
+    usuarios_pines = cargar_usuarios_pines(usuarios_pines_file)
+
+    if userID in usuarios_pines:
+        del usuarios_pines[userID]
+        guardar_usuarios_pines(usuarios_pines_file, usuarios_pines)
+        print(f"El usuario con el siguiente ID {userID} ha sido eliminado.")
+    else:
+        print(f"El ID {userID} es incorrecto o no existe en la lista de usuarios. Intente nuevamente.")
 
 def modifySystemValues():
-    # modificar los valores del sistema
     conversionOptions = [
         "Tipo de cambio: Compra de dólares usando colones",
         "Tipo de cambio: Compra de dólares usando bitcoins",
@@ -40,16 +68,20 @@ def modifySystemValues():
         for idx, option in enumerate(conversionOptions, start=1):
             print(f"{idx}. {option}")
         
-        choice = int(getUserInput("Ingrese el número de la opción que desea modificar: "))
-        if 1 <= choice <= len(conversionOptions) - 1:
-            newValue = getUserInput("Ingrese el nuevo valor: ")
-            # implementación para modificar los valores del sistema
-            print(f"El siguiente Valor ha sido modificado para la opción {choice}: {newValue}")
-        elif choice == len(conversionOptions):
-            print("Volviendo al menú principal.")
-            break
-        else:
-            print("Opción inválida.")
+        try:
+            choice = int(getUserInput("Ingrese el número de la opción que desea modificar: "))
+        
+            if 1 <= choice <= len(conversionOptions) - 1:
+                newValue = getUserInput("Ingrese el nuevo valor: ")
+                # implementación para modificar los valores del sistema
+                print(f"El siguiente Valor ha sido modificado para la opción {choice}: {newValue}")
+            elif choice == len(conversionOptions):
+                print("Volviendo al menú principal.")
+                break
+            else:
+                print("Opción inválida.")
+        except ValueError:
+            print("Error: Debes ingresar un número entero. Intente nuevamente.")
 
 def mainMenu():
     while True:
@@ -58,18 +90,22 @@ def mainMenu():
         print("2. Modificar valores del sistema")
         print("3. Salir")
 
-        choice = int(getUserInput("Ingrese el número de la opción que desea elegir: "))
+        try:
+            choice = int(getUserInput("Ingrese el número de la opción que desea elegir: "))
         
-        if choice == 1:
-            userID = getUserInput("Ingrese el ID del usuario que desea eliminar: ")
-            deleteUser(userID)
-        elif choice == 2:
-            modifySystemValues()
-        elif choice == 3:
-            print("Saliendo del programa.")
-            exit()
-        else:
-            print("Opción inválida. Vuelva a intentarlo.")
+            if choice == 1:
+
+                userID = getUserInput("Ingrese el ID del usuario que desea eliminar: ")
+                deleteUser(userID)
+            elif choice == 2:
+                modifySystemValues()
+            elif choice == 3:
+                print("Saliendo del programa.")
+                exit()
+            else:
+                print("Opción inválida. Vuelva a intentarlo.")
+        except ValueError:
+            print("Error: Debes ingresar un número entero. Intente nuevamente.")
 
 def menu_configuracion_avanzada():
     print("Este es el menú de Configuración Avanzada. Autenticación es requerida.")
@@ -81,4 +117,6 @@ def menu_configuracion_avanzada():
 if __name__ == "__main__":
     menu_configuracion_avanzada()
 
-   
+
+
+
