@@ -69,7 +69,7 @@ while True:
 
   
         elif opcion == 2:
-            numero1 = int(input('Digite el primer numero:'))   
+            '''Verificacion de usuario '''  
         elif opcion == 3:
             menu_configuracion_avanzada()
             numero1 = int(input('Digite el primer numero:'))
