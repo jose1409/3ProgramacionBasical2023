@@ -26,25 +26,33 @@ def cargar_usuarios_pines(file_path):
     try:
         with open(file_path, 'r') as file: 
 
-            #print(file.read ())
-            print(file.readline ())
-            print(file.readline ())
-    
-            print(file.readlines ())
-            for line in file: # en lugar de line hacer un range sobre file, se ignora la primera linea y se procesa luego en grupos de usuarios
-                usuario = line.strip()
-                usuarios_pines[usuario] = ""
+            
+            lines = file.readlines()
+            lines = lines[1:]
+            for index in range(0, len(lines), 2):
+                
+                usuario = lines[index]
+                pin =  lines[index+1]
+                # quitar \n de cada
+                usuario = usuario[:len(usuario)-1]
+                pin = pin[:len(pin)-1]
+
+                usuarios_pines[usuario] = pin
+
     except FileNotFoundError:
         pass
     return usuarios_pines
 
 def guardar_usuarios_pines(file_path, usuarios_pines):
     with open(file_path, 'w') as file:
+        file.write(f"{specialPIN}\n")
         for usuario, pin in usuarios_pines.items():
-            file.write(f"{pin},{usuario}\n")
+            file.write(f"{usuario}\n")
+            file.write(f"{pin}\n")
 
 def deleteUser(userID):
     usuarios_pines = cargar_usuarios_pines(usuarios_pines_file)
+    
 
     if userID in usuarios_pines:
         del usuarios_pines[userID]
