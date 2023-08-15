@@ -1,10 +1,3 @@
-'''
-Instrucciones
-Apuesta = Verificacion
-Repartir Cartas/Mostrarlas
-Ligar/Quedarse
-
-'''
 import time
 import random
 import os
@@ -15,10 +8,11 @@ baraja = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A
 usuario = []   
 crupier = []
 
+#Funcion que se llamara para limpiar la terminal para que no se llene de tanta informacion
 def limpiar():
     os.system('cls')
 
-
+#Funcion que hara verificaciones de dinero y requisitos de dinero minimo
 def requisito_dinero_temporal(): 
         #Ingresar a la carpeta archivos avanzados y leer el minimo de apuesta disponible.
     global apuesta
@@ -44,13 +38,12 @@ def requisito_dinero_temporal():
             limpiar()
             print('Digite un monto con digitos numericos -_-')
 
-
+#Funcion que se llamara para que despues de finalizar un juego las listas se limpien y queden para usar de nuevo
 def vaciar_lista():
     usuario.clear()
     crupier.clear()
-        #Instrucciones iniciales
 
-        
+#Funcion que se llamara unicamente si el usuario las solicita
 def instrucciones():
     print('INSTRUCCIONES\n'
         'El objetivo de cualquier mano de blackjack es derrotar a la banca\n'
@@ -67,7 +60,7 @@ def instrucciones():
         'DOBLAR:\n' 
         '       Puedes colocar una apuesta extra, igual a la apuesta inicial, a cambio de una sola carta más para tu mano, después de la cual te plantarás automáticamente\n')
 
-
+#Aqui se hara el llamado inicial y reparticion de dos cartas para iniciar el juego
 def mezclar(repartir_cartas):
     numero = 0
     while numero <2:
@@ -84,7 +77,7 @@ def mezclar(repartir_cartas):
             baraja[i][j] = 0
             numero +=1
 
-
+#Esta se llamara para que cuando exista una A sea enviada al final de la lista y haga su conversion a numero correctamente
 def acomodar_letras(carta):
     for i in range(len(carta)):
         if carta[i][0] == 'A':
@@ -92,7 +85,7 @@ def acomodar_letras(carta):
             carta[i]=carta[len(carta)-1]
             carta[len(carta)-1]=temp
     
-
+#Esta funcion se llamara para hacer la suma respectiva de crupier y usuario cada vez que sea necesario, tanto condicionales como resultados
 def suma_total(carta):
     acomodar_letras(carta)
     suma=0
@@ -109,7 +102,7 @@ def suma_total(carta):
             suma += carta[i][0]    
     return suma
 
-
+#Juego inicil, aqui se llamara distintas funciones para mostrar el juego inicial e inidicar primeras opciones al usuario.
 def juego():
     mezclar(usuario), mezclar(crupier)
     print(f'---Baraja crupier---')
@@ -126,7 +119,7 @@ def juego():
     elif opcion.lower() == 'plantarse':
         plantarse()
 
-
+#Esta funcion me mostrara el juego del ususario, juego completo
 def mostrar_juego(figuras):
     for i in range(len(figuras)):
         time.sleep(0.5)
@@ -138,6 +131,8 @@ def mostrar_juego(figuras):
             print(f'{figuras[i][0]} de Treboles')
         elif figuras[i][1] == 3:
             print(f'{figuras[i][0]} de Corazones')
+
+#Este funcion me mostrara el juego del crupier, ocultando la segunda carta y mostrando unicamente la Carta numero 2.
 def mostrar_juego_dos(figuras):
     time.sleep(0.5)
     for i in range(1,len(figuras)):
@@ -152,6 +147,7 @@ def mostrar_juego_dos(figuras):
     time.sleep(0.5) 
     print('Carta #2 Oculta')
 
+#Esta funcion sera llamada cada vez que el usuario desee pedir una carta y redirigiendolo a un segunda funcion modificada de juego()
 def ligar(repartir_cartas):
     numero = 0
     while numero <=0:
@@ -170,9 +166,27 @@ def ligar(repartir_cartas):
     limpiar()
     juego_despues_ligar()
 
-  
+#Esta funcion sera llamada por el crupier para solicitar cartas cada vez que lo necesite
+def ligar_dos(repartir_cartas):
+    numero = 0
+    while numero <=0:
+            #Recorre la lista para el lado
+        j=random.randint(0,12)
+            #Recorre la lista para abajo
+        i=random.randint(0,3)
+        if baraja[i][j] != 0:
+            temporal = []
+                #Primero se recorre vertical y luego horizontal (abajo y derecha)
+            temporal.append(baraja[i][j])
+            temporal.append(i)
+            repartir_cartas.append(temporal)
+            baraja[i][j] = 0
+            numero +=1
+    limpiar()
+    plantarse()
+
+#Segunda pestaña de juego, sera mejorada con condicionales por si se pasa de 21
 def juego_despues_ligar():
-    temp=True
     print(f'Tu saldo es de {dinero_temporal}')
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
@@ -183,24 +197,45 @@ def juego_despues_ligar():
     
     if suma_total(usuario) > 21:
         opcion = input('Usted perdio, ¿Desea jugar de nuevo? (si/no):')
-        if opcion.lower() == 'si':
-            limpiar()
-            requisito_dinero_temporal()
-        elif opcion.lower() == 'no':
-            print()         #Volver al Menu principal (Funcion de devolver el dinero al archivo txt saldos)
+        jugar_nuevamente(opcion)
     elif suma_total(usuario) <=21:
         opcion = input('Ligar, Plantarse:')
         if opcion.lower() == 'ligar':
             ligar(usuario)
         elif opcion.lower() == 'plantarse':
             plantarse()
-        
-        
+
+#Una vez que el usuario se plante, correra esta funcion y jugara automaticamente hasta que alcance 15 o mas o supere los 21 y pierda   
 def plantarse():
+    global dinero_temporal
+    print(f'Tu saldo es de {dinero_temporal}')
+    print(f'---Baraja crupier---')
+    mostrar_juego(crupier)
+    print(f"-----suma total crupier-----\n{suma_total(crupier)}\n")
     print()
+    print(f"---Baraja usuario---")
+    mostrar_juego(usuario)
+    print(f"-----suma total usuario-----\n{suma_total(usuario)}\n")
+    time.sleep(1)
+    if suma_total(crupier) < 15:
+        ligar_dos(crupier)
+    else:
+        if suma_total(usuario) > suma_total(crupier) or suma_total(crupier) > 21:
+            print(f'Felicidades, usted gano, tu apuesta de {apuesta} te hizo ganar {apuesta*2}')
+            dinero_temporal += apuesta*2
+            opcion = input('¿Desea jugar de nuevo? (si/no):')
+            jugar_nuevamente(opcion)
+        elif suma_total(usuario) < suma_total(crupier) and suma_total(crupier) <= 21:
+            opcion = input('Usted perdio, ¿Desea jugar de nuevo? (si/no):')
+            jugar_nuevamente(opcion)
 
+        elif suma_total(usuario) == suma_total(crupier):
+            print(f'Empate, recuperas tu apuesta de {apuesta}')
+            dinero_temporal += apuesta
+            opcion = input('¿Desea jugar de nuevo? (si/no):')
+            jugar_nuevamente(opcion)
 
-
+#Inicio del juego, con opcion de ver las instrucciones y dirigiendose a la funcion de las apuestas,
 def inicio():
     num = 0
     while num <=0:
@@ -215,8 +250,15 @@ def inicio():
         else:
             limpiar()
             print('Digite "si" o "no", no otra estupidez')
-        
+
+#Esta funcion sera usada cada vez que finaliza el juego, no importa si pierde, gana o empata, y su funcion sera volver al submenu de juegos o jugar nuevamente
+def jugar_nuevamente(opcion):
+    if opcion.lower() == 'si':
+        limpiar()
+        requisito_dinero_temporal()
+    elif opcion.lower() == 'no':
+        print('Volviendo al Submenu de Juegos')         #Volver al Menu principal (Funcion de devolver el dinero al archivo txt saldos)
+        time.sleep(1)
+        limpiar()
+
 inicio()
-
-
-
