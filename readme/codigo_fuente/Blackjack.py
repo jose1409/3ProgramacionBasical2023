@@ -33,6 +33,7 @@ def requisito_dinero_temporal():
             else:
                 num += 1
                 dinero_temporal -= apuesta
+                limpiar()
                 juego()
         except ValueError:
             limpiar()
@@ -103,6 +104,7 @@ def suma_total(carta):
 
 #Juego inicil, aqui se llamara distintas funciones para mostrar el juego inicial e inidicar primeras opciones al usuario.
 def juego():
+    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
     mezclar(usuario), mezclar(crupier)
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
@@ -112,11 +114,17 @@ def juego():
     mostrar_juego(usuario)
     time.sleep(1)
     print(f"-----suma total usuario-----\n{suma_total(usuario)}\n")
-    opcion = input('Ligar, Plantarse:')
-    if opcion.lower() == 'ligar':
-        ligar(usuario)
-    elif opcion.lower() == 'plantarse':
-        plantarse()
+    num=0
+    while num <=0:
+        opcion = input('Ligar, Plantarse:')
+        if opcion.lower() == 'ligar':
+            ligar(usuario)
+            num +=1
+        elif opcion.lower() == 'plantarse':
+            plantarse()
+            num +=1
+        else:
+            print('Error: Digite (ligar/plantarse)')
 
 #Esta funcion me mostrara el juego del ususario, juego completo
 def mostrar_juego(figuras):
@@ -186,23 +194,28 @@ def ligar_dos(repartir_cartas):
 
 #Segunda pestaña de juego, sera mejorada con condicionales por si se pasa de 21
 def juego_despues_ligar():
-    print(f'Tu saldo es de {dinero_temporal}')
+    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
     print()
     print(f"---Baraja usuario---")
     mostrar_juego(usuario)
     print(f"-----suma total usuario-----\n{suma_total(usuario)}\n")
-    
     if suma_total(usuario) > 21:
         opcion = input('Usted perdio, ¿Desea jugar de nuevo? (si/no):')
         jugar_nuevamente(opcion)
     elif suma_total(usuario) <=21:
-        opcion = input('Ligar, Plantarse:')
-        if opcion.lower() == 'ligar':
-            ligar(usuario)
-        elif opcion.lower() == 'plantarse':
-            plantarse()
+        num = 0
+        while num <= 0:
+            opcion = input('Ligar, Plantarse:')
+            if opcion.lower() == 'ligar':
+                num += 1
+                ligar(usuario)
+            elif opcion.lower() == 'plantarse':
+                num += 1
+                plantarse()
+            else:
+                print('Error: Digite (ligar/plantarse)')
 
 #Una vez que el usuario se plante, correra esta funcion y jugara automaticamente hasta que alcance 15 o supere los 21 y pierda   
 def plantarse():
@@ -252,12 +265,21 @@ def inicio():
 
 #Esta funcion sera usada cada vez que finaliza el juego, no importa si pierde, gana o empata, y su funcion sera volver al submenu de juegos o jugar nuevamente
 def jugar_nuevamente(opcion):
-    if opcion.lower() == 'si':
-        limpiar()
-        requisito_dinero_temporal()
-    elif opcion.lower() == 'no':
-        print('Volviendo al Submenu de Juegos')         #Volver al Menu principal (Funcion de devolver el dinero al archivo txt saldos)
-        time.sleep(1)
-        limpiar()
+    num = 0
+    while num <= 0:
+        if opcion.lower() == 'si':
+            limpiar()
+            num += 1
+            requisito_dinero_temporal()
+        elif opcion.lower() == 'no':
+            print('Volviendo al Submenu de Juegos')         #Volver al Menu principal (Funcion de devolver el dinero al archivo txt saldos)
+            time.sleep(1)
+            limpiar()
+            num += 1
+        else:
+            opcion = input('Error: Digite (si/no)')
 
+def finalizar_while():
+    print()
+    #Seguir, posible mejora de optimizacion
 inicio()
