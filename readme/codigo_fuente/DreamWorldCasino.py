@@ -43,6 +43,7 @@ while True:
                                     os.mkdir(ID)
                                     print(f"el ID {ID} ha sido creado, volviendo al Menu Principal")
                                     archivo = open(os.path.join(ID, 'saldos.txt'), 'w')
+                                    archivo.write(str(0) + '\n')
                                     archivo.close()
                                     #Modos de lectura en BibliotecaOS.py
                                     archivo = open('usuarios_pines.txt', 'a')
@@ -68,9 +69,8 @@ while True:
 
 
 
-  
         elif opcion == 2:
-            '''Verificacion de usuario '''  
+            '''Verificacion de usuario '''
         elif opcion == 3:
             menu_configuracion_avanzada()
             numero1 = int(input('Digite el primer numero:'))
