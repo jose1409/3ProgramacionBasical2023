@@ -19,7 +19,7 @@ def authenticateUser():
             return True
         attempts -= 1
         print("El PIN es incorrecto. Sus intentos restantes son:", attempts)
-    return False
+    return False #probar el PIN especial
 
 def cargar_usuarios_pines(file_path):
     usuarios_pines = {}
@@ -82,6 +82,8 @@ def modifySystemValues():
             if 1 <= choice <= len(conversionOptions) - 1:
                 newValue = getUserInput("Ingrese el nuevo valor: ")
                 # implementación para modificar los valores del sistema
+                # funcion que abrá el archivo
+                
                 print(f"El siguiente Valor ha sido modificado para la opción {choice}: {newValue}")
             elif choice == len(conversionOptions):
                 print("Volviendo al menú principal.")

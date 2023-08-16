@@ -1,1 +1,6 @@
-#hola
+tipocambiocolones:0
+tipocambiobitcoin:0
+acumuladotragamonedas:0
+minimotragamonedas:0
+minimoblackjack:0
+inversionminima:0
