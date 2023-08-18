@@ -2,12 +2,13 @@ import time
 import random
 import os
 apuesta = 0
+apuesta_dividir = 0
 apuesta_minima_temporal = 10
-dinero_temporal = 1000
+dinero_temporal = 150
 baraja = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A']
-usuario = []   
+usuario = [['Q',2],['J',1]]   
 crupier = []
-
+usuario_dividir = []
 #Funcion que se llamara para limpiar la terminal para que no se llene de tanta informacion
 def limpiar():
     os.system('cls')
@@ -104,8 +105,11 @@ def suma_total(carta):
 
 #Juego inicil, aqui se llamara distintas funciones para mostrar el juego inicial e inidicar primeras opciones al usuario.
 def juego():
+    global apuesta
+    global dinero_temporal
     print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
-    mezclar(usuario), mezclar(crupier)
+    #mezclar(usuario)
+    mezclar(crupier)
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
     print()  
@@ -116,15 +120,149 @@ def juego():
     print(f"-----suma total usuario-----\n{suma_total(usuario)}\n")
     num=0
     while num <=0:
-        opcion = input('Ligar, Plantarse:')
+        opcion = input('Ligar, Plantarse, Duplicar, Dividir:')
         if opcion.lower() == 'ligar':
             ligar(usuario)
             num +=1
         elif opcion.lower() == 'plantarse':
             plantarse()
             num +=1
+        elif opcion.lower() == 'duplicar':
+            if dinero_temporal < apuesta:
+                print('Error: Dinero insuficiente, Digite otra opcion')
+            elif dinero_temporal > apuesta:
+                dinero_temporal -= apuesta
+                apuesta = apuesta*2
+                ligar_dos(usuario)
+                num +=1
+        elif opcion.lower() == 'dividir':
+            if dividir(usuario[0][0]) == dividir(usuario[1][0]): 
+                if dinero_temporal > apuesta:
+                #La lista usuario deja de tener dos valores, se elimina el segundo y este pasa a ser parte de la segunda lista
+                    temp = usuario[1]
+                    usuario.remove(temp)
+                    usuario_dividir.append(temp)
+                    apuesta = apuesta_dividir
+                    dinero_temporal -= apuesta_dividir
+                    num+=1
+                    limpiar()
+                    juego_dividido()
+                else:
+                    print('Error: Dinero insuficiente, Digite otra opcion')
+            else:
+                print('Error: Para dividir necesita dos cartas de igual valor. Digite otra opcion')
         else:
-            print('Error: Digite (ligar/plantarse)')
+            print('Error: Digite una de las opciones anteriores')
+
+#
+def juego_dividido():
+    print(f'Saldo: {dinero_temporal}\nApuesta 1:{apuesta}\nApuesta 2:{apuesta_dividir}')
+    print(f'---Baraja crupier---')
+    mostrar_juego_dos(crupier)
+    print()  
+    time.sleep(1)
+    print(f"---Baraja usuario 1---")
+    mostrar_juego(usuario)
+    print(f"-----suma total -----\n{suma_total(usuario)}\n")
+    time.sleep(1)
+    print(f"---Baraja usuario 2---")
+    mostrar_juego(usuario_dividir)
+    print(f"-----suma total -----\n{suma_total(usuario_dividir)}\n")
+    num = 0
+    while num <=0:
+        opcion = input('Baraja 1: Ligar, Plantarse:')
+        if opcion.lower() == 'ligar':
+            ligar_tres(usuario)
+            num +=1
+        elif opcion.lower() == 'plantarse':
+            num +=1
+            juego_divido_tres()
+        elif opcion.lower() == 'dividir':
+            print('Dividir esta disponible solamente en el primer juego')
+        elif opcion.lower() == 'duplicar':
+            print('Duplicar esta disponible solamente en el primer juego')
+        else:
+            print('Error: Digite una de las opciones anteriores')
+
+#
+def juego_divido_tres():
+    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
+    print(f'---Baraja crupier---')
+    mostrar_juego_dos(crupier)
+    print()  
+    print(f"---Baraja usuario 1---")
+    mostrar_juego(usuario)
+    print(f"-----suma total -----\n{suma_total(usuario)}\n")
+    time.sleep(1)
+    print(f"---Baraja usuario 2---")
+    mostrar_juego(usuario_dividir)
+    print(f"-----suma total -----\n{suma_total(usuario_dividir)}\n")
+    num = 0
+    while num <= 0:
+        opcion = input('Baraja 2: Ligar, Plantarse:')
+        if opcion.lower() == 'ligar':
+            ligar_cuatro(usuario_dividir)
+            num +=1
+        elif opcion.lower() == 'plantarse':
+            num +=1
+            juego_dividido_fin()
+        elif opcion.lower() == 'dividir':
+            print('Dividir esta disponible solamente en el primer juego')
+        elif opcion.lower() == 'duplicar':
+            print('Duplicar esta disponible solamente en el primer juego')
+        else:
+            print('Error: Digite una de las opciones anteriores')
+
+def juego_dividido_fin():
+    print()
+#
+def ligar_cuatro(repartir_cartas):
+    numero = 0
+    while numero <=0:
+            #Recorre la lista para el lado
+        j=random.randint(0,12)
+            #Recorre la lista para abajo
+        i=random.randint(0,3)
+        if baraja[i][j] != 0:
+            temporal = []
+                #Primero se recorre vertical y luego horizontal (abajo y derecha)
+            temporal.append(baraja[i][j])
+            temporal.append(i)
+            repartir_cartas.append(temporal)
+            baraja[i][j] = 0
+            numero +=1
+    limpiar()
+    juego_divido_tres()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Me ayuda a retornar un valor a los numeros y asi poder saber si es posible dividir
+def dividir(valor):
+    temp = 0
+    if valor == 'A':
+        temp = 11
+    elif valor == 'K':
+        temp = 10
+    elif valor == 'Q':
+        temp = 10
+    elif valor == 'J':
+        temp = 10
+    else:
+        temp = valor
+    return temp
 
 #Esta funcion me mostrara el juego del ususario, juego completo
 def mostrar_juego(figuras):
@@ -153,6 +291,25 @@ def mostrar_juego_dos(figuras):
             print(f'{figuras[i][0]} de Corazones') 
     time.sleep(0.5) 
     print('Carta #2 Oculta')
+
+#
+def ligar_tres(repartir_cartas):
+    numero = 0
+    while numero <=0:
+            #Recorre la lista para el lado
+        j=random.randint(0,12)
+            #Recorre la lista para abajo
+        i=random.randint(0,3)
+        if baraja[i][j] != 0:
+            temporal = []
+                #Primero se recorre vertical y luego horizontal (abajo y derecha)
+            temporal.append(baraja[i][j])
+            temporal.append(i)
+            repartir_cartas.append(temporal)
+            baraja[i][j] = 0
+            numero +=1
+    limpiar()
+    juego_dividido()
 
 #Esta funcion sera llamada cada vez que el usuario desee pedir una carta y redirigiendolo a juego_despues_ligar()
 def ligar(repartir_cartas):
@@ -214,13 +371,17 @@ def juego_despues_ligar():
             elif opcion.lower() == 'plantarse':
                 num += 1
                 plantarse()
+            elif opcion.lower() == 'duplicar':
+                print('Error: Duplicar esta disponible solo en ronda 1, Digite otra opcion')
+            elif opcion.lower() == 'dividir':
+                print('Error: Dividir esta disponible solo en ronda 1, Digite otra opcion')
             else:
                 print('Error: Digite (ligar/plantarse)')
 
 #Una vez que el usuario se plante, correra esta funcion y jugara automaticamente hasta que alcance 15 o supere los 21 y pierda   
 def plantarse():
     global dinero_temporal
-    print(f'Tu saldo es de {dinero_temporal}')
+    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
     print(f'---Baraja crupier---')
     mostrar_juego(crupier)
     print(f"-----suma total crupier-----\n{suma_total(crupier)}\n")
@@ -229,7 +390,10 @@ def plantarse():
     mostrar_juego(usuario)
     print(f"-----suma total usuario-----\n{suma_total(usuario)}\n")
     time.sleep(1)
-    if suma_total(crupier) < 15:
+    if suma_total(usuario) > 21:
+        opcion = input('Usted perdio, ¿Desea jugar de nuevo? (si/no):')
+        jugar_nuevamente(opcion)
+    elif suma_total(crupier) < 15:
         ligar_dos(crupier)
     else:
         if suma_total(usuario) > suma_total(crupier) or suma_total(crupier) > 21:
@@ -282,4 +446,5 @@ def jugar_nuevamente(opcion):
 def finalizar_while():
     print()
     #Seguir, posible mejora de optimizacion
-inicio()
+    
+juego()
