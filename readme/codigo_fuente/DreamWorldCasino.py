@@ -7,7 +7,7 @@ def limpiar_pantalla():
     if os.name == 'nt':  # Windows    #Toda la variable se refiese al sistema operativo windows(memorizable)
         os.system('cls')
 # Menu Principal
-os.chdir('/Users/Usuario/OneDrive/Documentos/GitHub/3ProgramacionBasical2023/readme/')
+os.chdir('./readme/')
 while True:
     try:
         print('---Bienvenido a DreamWorld Casino---\n1. Registro de usuario nuevo\n2. DreamWorld Casino\n3. Configuracion avanzada\n''4. Salir')
