@@ -7,6 +7,7 @@ def limpiar_pantalla():
     if os.name == 'nt':  # Windows    #Toda la variable se refiese al sistema operativo windows(memorizable)
         os.system('cls')
 # Menu Principal
+os.chdir('/Users/Usuario/OneDrive/Documentos/GitHub/3ProgramacionBasical2023/readme/')
 while True:
     try:
         print('---Bienvenido a DreamWorld Casino---\n1. Registro de usuario nuevo\n2. DreamWorld Casino\n3. Configuracion avanzada\n''4. Salir')
@@ -42,6 +43,7 @@ while True:
                                     os.mkdir(ID)
                                     print(f"el ID {ID} ha sido creado, volviendo al Menu Principal")
                                     archivo = open(os.path.join(ID, 'saldos.txt'), 'w')
+                                    archivo.write(str(0) + '\n')
                                     archivo.close()
                                     #Modos de lectura en BibliotecaOS.py
                                     archivo = open('usuarios_pines.txt', 'a')
@@ -72,7 +74,6 @@ while True:
             '''Verificacion de usuario '''  
         elif opcion == 3:
             menu_configuracion_avanzada()
-            numero1 = int(input('Digite el primer numero:'))
         elif opcion == 4:
             print('Gracias por visitar DreamWorld Casino, vuelva pronto')
             break
