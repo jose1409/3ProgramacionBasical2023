@@ -1,7 +1,7 @@
 import time
 import random
 import os
-apuesta = 0
+apuesta = 20
 apuesta_dividir = 0
 apuesta_minima_temporal = 10
 dinero_temporal = 150
@@ -103,10 +103,11 @@ def suma_total(carta):
             suma += carta[i][0]    
     return suma
 
-#Juego inicil, aqui se llamara distintas funciones para mostrar el juego inicial e inidicar primeras opciones al usuario.
+#Juego inicial, aqui se llamara distintas funciones para mostrar el juego inicial e inidicar primeras opciones al usuario.
 def juego():
     global apuesta
     global dinero_temporal
+    global apuesta_dividir
     print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
     #mezclar(usuario)
     mezclar(crupier)
@@ -142,7 +143,7 @@ def juego():
                     temp = usuario[1]
                     usuario.remove(temp)
                     usuario_dividir.append(temp)
-                    apuesta = apuesta_dividir
+                    apuesta_dividir += apuesta
                     dinero_temporal -= apuesta_dividir
                     num+=1
                     limpiar()
@@ -154,8 +155,8 @@ def juego():
         else:
             print('Error: Digite una de las opciones anteriores')
 
-#
-def juego_dividido():
+#Comentario
+def mostrar_juego_dividido():
     print(f'Saldo: {dinero_temporal}\nApuesta 1:{apuesta}\nApuesta 2:{apuesta_dividir}')
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
@@ -168,54 +169,110 @@ def juego_dividido():
     print(f"---Baraja usuario 2---")
     mostrar_juego(usuario_dividir)
     print(f"-----suma total -----\n{suma_total(usuario_dividir)}\n")
-    num = 0
-    while num <=0:
-        opcion = input('Baraja 1: Ligar, Plantarse:')
+
+#Esta sera la vista y juego cuando el ususario quiera dividir y tenga 2 juegos
+def juego_dividido():
+    mostrar_juego_dividido()
+    ciclo = 1
+    if suma_total(usuario) > 21:
+        print('Usted perdio con la baraja 1: Siguiendo a Baraja 2')
+        ciclo = 2
+    if suma_total(usuario_dividir) > 21:
+        print('Usted perdio con la baraja 2.')
+    if suma_total(usuario) > 21 and suma_total(usuario_dividir) > 21:
+        opcion = input('Usted perdio ambos juegos, ¿Desea jugar de nuevo? (si/no):')
+        jugar_nuevamente(opcion)
+    opcion_dividir(ciclo)
+
+#Comentario
+def juego_dividido_dos():
+    mostrar_juego_dividido()
+    ciclo = 2
+    if suma_total(usuario_dividir) > 21:
+        print('Usted perdio con la baraja 2: Plantandose Automaticamente')
+        juego_dividido_plantado()
+    if suma_total(usuario) > 21 and suma_total(usuario_dividir) > 21:
+        opcion = input('Usted perdio ambos juegos, ¿Desea jugar de nuevo? (si/no):')
+        jugar_nuevamente(opcion)
+    if suma_total(usuario_dividir) <= 21:
+        opcion_dividir(ciclo)
+
+#Comentario
+def opcion_dividir(num):
+    while num <= 2:
+        opcion = input(f'Baraja {num}: Ligar, Plantarse:')
         if opcion.lower() == 'ligar':
-            ligar_tres(usuario)
-            num +=1
+            if num == 1:
+                ligar_tres(usuario)
+                break
+            elif num == 2:
+                ligar_tres(usuario_dividir)
+                break
         elif opcion.lower() == 'plantarse':
-            num +=1
-            juego_divido_tres()
+            if num == 1:
+                limpiar()
+                juego_dividido_dos()
+                break
+            elif num == 2:
+                limpiar()
+                juego_dividido_plantado()
+                break
         elif opcion.lower() == 'dividir':
-            print('Dividir esta disponible solamente en el primer juego')
+            print('Dividir esta disponible solamente en la primer mano')
         elif opcion.lower() == 'duplicar':
-            print('Duplicar esta disponible solamente en el primer juego')
+            print('Duplicar esta disponible solamente en la primer mano')
         else:
             print('Error: Digite una de las opciones anteriores')
 
-#
-def juego_divido_tres():
-    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
-    print(f'---Baraja crupier---')
-    mostrar_juego_dos(crupier)
-    print()  
-    print(f"---Baraja usuario 1---")
-    mostrar_juego(usuario)
-    print(f"-----suma total -----\n{suma_total(usuario)}\n")
-    time.sleep(1)
-    print(f"---Baraja usuario 2---")
-    mostrar_juego(usuario_dividir)
-    print(f"-----suma total -----\n{suma_total(usuario_dividir)}\n")
-    num = 0
-    while num <= 0:
-        opcion = input('Baraja 2: Ligar, Plantarse:')
-        if opcion.lower() == 'ligar':
-            ligar_cuatro(usuario_dividir)
-            num +=1
-        elif opcion.lower() == 'plantarse':
-            num +=1
-            juego_dividido_fin()
-        elif opcion.lower() == 'dividir':
-            print('Dividir esta disponible solamente en el primer juego')
-        elif opcion.lower() == 'duplicar':
-            print('Duplicar esta disponible solamente en el primer juego')
-        else:
-            print('Error: Digite una de las opciones anteriores')
 
-def juego_dividido_fin():
-    print()
-#
+def juego_dividido_plantado():
+    mostrar_juego_dividido()
+    global apuesta
+    global apuesta_dividir
+    global dinero_temporal
+    if suma_total(usuario) > 21 and suma_total(usuario_dividir) > 21:
+        opcion = input('Usted perdio ambos juegos, ¿Desea jugar de nuevo? (si/no):')
+        jugar_nuevamente(opcion)
+    elif suma_total(crupier) < 15:
+        ligar_cuatro(crupier)
+    else:
+        if suma_total(usuario) > suma_total(crupier) or suma_total(crupier) > 21:
+            print(f'Felicidades, usted gano, tu apuesta de {apuesta} te hizo ganar {apuesta*2}')
+            dinero_temporal += apuesta*2
+        
+        if suma_total(usuario_dividir) > suma_total(crupier) or suma_total(crupier) > 21:
+            print(f'Felicidades, usted gano el juego 2, tu apuesta de {apuesta_dividir} te hizo ganar {apuesta_dividir*2}')
+            dinero_temporal += apuesta_dividir*2
+        
+        if suma_total(usuario) < suma_total(crupier) and suma_total(crupier) <= 21:
+            print('Usted perdio el juego 1:')
+        
+        if suma_total(usuario_dividir) < suma_total(crupier) and suma_total(crupier) <= 21:
+            print('Usted perdio el juego 2:')
+        
+        if suma_total(usuario) == suma_total(crupier):
+            print(f'Empate, recuperas tu apuesta de {apuesta}')
+            dinero_temporal += apuesta
+        
+        if suma_total(usuario_dividir) == suma_total(crupier):
+            print(f'Empate en el juego 2, recuperas tu apuesta de {apuesta_dividir}')
+            dinero_temporal += apuesta_dividir
+        opcion = input('¿Desea jugar de nuevo? (si/no):')
+        jugar_nuevamente(opcion)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Comentario
 def ligar_cuatro(repartir_cartas):
     numero = 0
     while numero <=0:
@@ -232,22 +289,7 @@ def ligar_cuatro(repartir_cartas):
             baraja[i][j] = 0
             numero +=1
     limpiar()
-    juego_divido_tres()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    juego_dividido_plantado()
 
 #Me ayuda a retornar un valor a los numeros y asi poder saber si es posible dividir
 def dividir(valor):
