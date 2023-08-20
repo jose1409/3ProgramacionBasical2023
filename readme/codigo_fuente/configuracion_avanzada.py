@@ -4,8 +4,8 @@ import os
 
 # PIN especial definido por el equipo para permitir acceso al menú
 specialPIN = "2023"
-usuarios_pines_file = "readme/usuarios_pines.txt"
-configuraciones_avanzadas_file = "readme/configuraciones_avanzadas.txt"
+usuarios_pines_file = "./usuarios_pines.txt"  #
+configuraciones_avanzadas_file = "./configuraciones_avanzadas.txt"
 
 def getUserInput(prompt):
     return input(prompt).strip()
