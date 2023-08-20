@@ -1,0 +1,6 @@
+tipocambiocolones:$600
+tipocambiobitcoin:$400
+acumuladotragamonedas:$20
+minimotragamonedas:$60
+minimoblackjack:$20
+inversionminima:$15
