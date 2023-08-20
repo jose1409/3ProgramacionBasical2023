@@ -1,10 +1,10 @@
 import time
 import random
 import os
-apuesta = 20
+apuesta = 0
 apuesta_dividir = 0
 apuesta_minima_temporal = 0
-dinero_temporal = 1000
+dinero_temporal = 0
 baraja = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A'],[2,3,4,5,6,7,8,9,10,'J','Q','K','A']
 usuario = []   
 crupier = []
@@ -460,7 +460,8 @@ def plantarse():
             jugar_nuevamente(opcion)
             
 #Inicio del juego, con opcion de ver las instrucciones y dirigiendose a la funcion de las apuestas,
-def inicio():
+def inicio(dato):
+    saldo_usuario(dato)
     num = 0
     while num <=0:
         opcion = input('Desea ver las Instrucciones? (si/no):')
@@ -474,6 +475,7 @@ def inicio():
         else:
             limpiar()
             print('Digite "si" o "no", no otra estupidez')
+    saldo_recuperar(dato)
 
 #Esta funcion sera usada cada vez que finaliza el juego, no importa si pierde, gana o empata, y su funcion sera volver al submenu de juegos o jugar nuevamente
 def jugar_nuevamente(opcion):
@@ -491,3 +493,18 @@ def jugar_nuevamente(opcion):
         else:
             opcion = input('Error: Digite (si/no)')
     
+#Aqui se accedera al saldo del usuario registrado y se trasladara al dinero temporal    
+def saldo_usuario(dato):
+    global dinero_temporal
+    archivo = open(os.path.join(dato, 'saldos.txt'), 'r')
+    saldo = archivo.read()
+    archivo.close()
+    saldo = int(saldo)
+    dinero_temporal += saldo
+
+#A la hora de que el usuario salga del juego, se actualizara su saldo desde este archivo automaticamente
+def saldo_recuperar(usuario):
+    dinero_temporal
+    archivo = open(os.path.join(usuario, 'saldos.txt'), 'w')
+    archivo.write(str(dinero_temporal) + '\n')
+    archivo.close()
