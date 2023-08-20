@@ -22,7 +22,7 @@ def requisito_dinero_temporal():
     while num <=0:
         try:
             vaciar_lista()
-            print(f'Tu saldo es de {dinero_temporal}')
+            print(f'Tu saldo es de ${dinero_temporal}')
             apuesta = int(input('¿Cuanto desea apostar?'))
                 #Entrar a la carpeta de usuario y saldos, verificar que posea el dinero suficiente(Modificaciones)
             if apuesta > dinero_temporal:
@@ -110,7 +110,7 @@ def juego():
     global apuesta
     global dinero_temporal
     global apuesta_dividir
-    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
+    print(f'Saldo: ${dinero_temporal}\nApuesta: ${apuesta}')
     mezclar(usuario),mezclar(crupier)
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
@@ -160,7 +160,7 @@ def juego():
 
 #Aqui se mostrara unicamente la careta del juego a la hora de dividir
 def mostrar_juego_dividido():
-    print(f'Saldo: {dinero_temporal}\nApuesta 1:{apuesta}\nApuesta 2:{apuesta_dividir}')
+    print(f'Saldo: ${dinero_temporal}\nApuesta 1:${apuesta}\nApuesta 2:${apuesta_dividir}')
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
     print()  
@@ -175,7 +175,7 @@ def mostrar_juego_dividido():
 
 #Aqui se mostrara la careta del juego a la hora de dividir final, quiere decir que estara disponible con la suma del crupier y la carta a la vista del usuario
 def mostrar_juego_dividido_final():
-    print(f'Saldo: {dinero_temporal}\nApuesta 1:{apuesta}\nApuesta 2:{apuesta_dividir}')
+    print(f'Saldo: ${dinero_temporal}\nApuesta 1:${apuesta}\nApuesta 2:${apuesta_dividir}')
     print(f'---Baraja crupier---')
     mostrar_juego(crupier)
     print(f"-----suma total -----\n{suma_total(crupier)}\n")
@@ -255,7 +255,7 @@ def juego_dividido_plantado():
         ligar_cuatro(crupier)
     else:
         if suma_total(usuario) <= 21 and suma_total(usuario) > suma_total(crupier):
-            print(f'Felicidades, usted gano, tu apuesta de {apuesta} te hizo ganar {apuesta*2}')
+            print(f'Felicidades, usted gano, tu apuesta de ${apuesta} te hizo ganar ${apuesta*2}')
             dinero_temporal += apuesta*2
         elif suma_total(usuario) == suma_total(crupier):
             print(f'Empate, recuperas tu apuesta de {apuesta} del juego 1')
@@ -264,10 +264,10 @@ def juego_dividido_plantado():
             print('Usted perdio el juego 1:')
 
         if suma_total(usuario_dividir) <= 21 and suma_total(usuario_dividir) > suma_total(crupier):
-            print(f'Felicidades, usted gano el juego 2, tu apuesta de {apuesta_dividir} te hizo ganar {apuesta_dividir*2}')
+            print(f'Felicidades, usted gano el juego 2, tu apuesta de ${apuesta_dividir} te hizo ganar ${apuesta_dividir*2}')
             dinero_temporal += apuesta_dividir*2
         elif suma_total(usuario_dividir) == suma_total(crupier):
-            print(f'Empate en el juego 2, recuperas tu apuesta de {apuesta_dividir}')
+            print(f'Empate en el juego 2, recuperas tu apuesta de ${apuesta_dividir}')
             dinero_temporal += apuesta_dividir
         else:
             print('Usted perdio el juego 2:')
@@ -399,7 +399,7 @@ def ligar_dos(repartir_cartas):
 
 #Segunda pestaña de juego, sera mejorada con condicionales por si se pasa de 21
 def juego_despues_ligar():
-    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
+    print(f'Saldo: ${dinero_temporal}\nApuesta: ${apuesta}')
     print(f'---Baraja crupier---')
     mostrar_juego_dos(crupier)
     print()
@@ -430,7 +430,7 @@ def juego_despues_ligar():
 #Una vez que el usuario se plante, correra esta funcion y jugara automaticamente hasta que alcance 15 o supere los 21 y pierda   
 def plantarse():
     global dinero_temporal
-    print(f'Saldo: {dinero_temporal}\nApuesta: {apuesta}')
+    print(f'Saldo: ${dinero_temporal}\nApuesta: ${apuesta}')
     print(f'---Baraja crupier---')
     mostrar_juego(crupier)
     print(f"-----suma total crupier-----\n{suma_total(crupier)}\n")
@@ -446,12 +446,12 @@ def plantarse():
         ligar_dos(crupier)
     else:
         if suma_total(usuario) <= 21 and suma_total(usuario) > suma_total(crupier) or suma_total(crupier) > 21:
-            print(f'Felicidades, usted gano, tu apuesta de {apuesta} te hizo ganar {apuesta*2}')
+            print(f'Felicidades, usted gano, tu apuesta de ${apuesta} te hizo ganar ${apuesta*2}')
             dinero_temporal += apuesta*2
             opcion = input('¿Desea jugar de nuevo? (si/no):')
             jugar_nuevamente(opcion)
         elif suma_total(usuario) == suma_total(crupier):
-            print(f'Empate, recuperas tu apuesta de {apuesta}')
+            print(f'Empate, recuperas tu apuesta de ${apuesta}')
             dinero_temporal += apuesta
             opcion = input('¿Desea jugar de nuevo? (si/no):')
             jugar_nuevamente(opcion)

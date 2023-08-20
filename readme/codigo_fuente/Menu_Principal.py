@@ -33,7 +33,6 @@ def lectura_usuarios(opcion,dato):
         pin = usuarios[i+1]
         verificar.append((usuario,pin))
     archivo.close()
-    print(verificar)
     if dato == 'ID':
         for usuario,pin in verificar:
             if usuario == opcion:
@@ -54,7 +53,6 @@ def lectura_usuarios(opcion,dato):
   
 #Si pasa la primer verificacion, se verificara que ingrese un ID y usuario correcto con 3 intentos
 def verificacion_2(dato):
-    global cierre
     if dato == 'ID':
         for i in range(3):
             id_pin = input(f'Ingrese su {dato}:')
@@ -77,16 +75,39 @@ def ver_saldo(ID):
     limpiar_pantalla()
     return print(f'Tu saldo actualmente es de ${saldo}, Volviendo al Submenu')
 
+def deposito(usuario):
+    while True:
+        dinero = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
+        if dinero == 1:
+            print('Trabajando, aun no disponible')
+            break
+        elif dinero == 2:
+            limpiar_pantalla()
+            monto = int(input('Digite el monto a depositar\n>>>'))
+            if monto <= 0:
+                print('Error: no puede depositar montos menores a 0')
+            else:
+                archivo = open(os.path.join(usuario, 'saldos.txt'), 'w')
+                archivo.write(str(monto) + '\n')
+                archivo.close()
+                limpiar_pantalla()
+                print(f'Transaccion realizada, deposito exitoso de ${monto}, volviendo al Submenu')
+                break
+        elif dinero == 3:
+            print('Trabajando, aun no disponible')
+            break
+        else:
+            print('Error, digite una de las opciones anteriores')
 #Aqui estara un usuario registrado, disponible todas las opciones que desee hacer o incluso jugar
 def menu_inicio(usuario,pin):
-    print(usuario,pin)
     while True:
         try:
             opcion = int(input('1. Retirar Dinero\n2. Depositar Dinero\n3. Ver Saldo Actual\n4. Juegos en Linea\n5. Eliminar Usuario\n6. Salir\n>>>'))
             if opcion == 1:
                 print('Trabajando')
             elif opcion == 2:
-                print('Trabajando')
+                deposito(usuario)
+
             elif opcion == 3:
                 ver_saldo(usuario)
             elif opcion == 4:
