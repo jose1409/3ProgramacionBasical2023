@@ -84,12 +84,12 @@ def guardar_configuraciones_avanzadas(file_path, configuraciones):
 
 def modifySystemValues():
     conversionOptions = [
-        "Tipo de cambio: Compra de dólares usando colones",
-        "Tipo de cambio: Compra de dólares usando bitcoins",
-        "Valor acumulado Tragamonedas",
-        "Apuesta mínima Tragamonedas",
-        "Apuesta mínima Blackjack",
-        "Inversión mínima para registrarse",
+        "tipocambiocolones",
+        "tipocambiobitcoin",
+        "acumuladotragamonedas",
+        "minimotragamonedas",
+        "minimoblackjack",
+        "inversionminima",
         "Salir"
     ]
 
