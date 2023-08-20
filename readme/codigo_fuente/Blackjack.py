@@ -128,6 +128,7 @@ def juego():
             ligar(usuario)
             num +=1
         elif opcion.lower() == 'plantarse':
+            limpiar()
             plantarse()
             num +=1
         elif opcion.lower() == 'duplicar':
@@ -324,6 +325,7 @@ def mostrar_juego(figuras):
 #Este funcion me mostrara el juego del crupier, ocultando la primer carta y mostrando unicamente la Carta numero 2.
 def mostrar_juego_dos(figuras):
     time.sleep(0.5)
+    print('Carta #1 Oculta')
     for i in range(1,len(figuras)):
         if figuras[i][1] == 0:
             print(f'{figuras[i][0]} de Bastos')
@@ -334,7 +336,6 @@ def mostrar_juego_dos(figuras):
         elif figuras[i][1] == 3:
             print(f'{figuras[i][0]} de Corazones') 
     time.sleep(0.5) 
-    print('Carta #2 Oculta')
 
 #Otra funcion de ligar con dos diferentes posibles juegos de acuerdo del temp
 def ligar_tres(repartir_cartas, temp):
@@ -417,6 +418,7 @@ def juego_despues_ligar():
                 ligar(usuario)
             elif opcion.lower() == 'plantarse':
                 num += 1
+                limpiar()
                 plantarse()
             elif opcion.lower() == 'duplicar':
                 print('Error: Duplicar esta disponible solo en ronda 1, Digite otra opcion')
@@ -443,7 +445,7 @@ def plantarse():
     elif suma_total(crupier) < 15:
         ligar_dos(crupier)
     else:
-        if suma_total(usuario) <= 21 and suma_total(usuario) > suma_total(crupier):
+        if suma_total(usuario) <= 21 and suma_total(usuario) > suma_total(crupier) or suma_total(crupier) > 21:
             print(f'Felicidades, usted gano, tu apuesta de {apuesta} te hizo ganar {apuesta*2}')
             dinero_temporal += apuesta*2
             opcion = input('¿Desea jugar de nuevo? (si/no):')
@@ -456,6 +458,7 @@ def plantarse():
         else:
             opcion = input('Usted perdio, ¿Desea jugar de nuevo? (si/no):')
             jugar_nuevamente(opcion)
+            
 #Inicio del juego, con opcion de ver las instrucciones y dirigiendose a la funcion de las apuestas,
 def inicio():
     num = 0
@@ -488,4 +491,3 @@ def jugar_nuevamente(opcion):
         else:
             opcion = input('Error: Digite (si/no)')
     
-inicio()
