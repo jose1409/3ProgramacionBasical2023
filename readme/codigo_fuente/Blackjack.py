@@ -29,7 +29,7 @@ def requisito_dinero_temporal():
                 print('Dinero insuficiente, intente nuevamente')
             elif apuesta < apuesta_minima_temporal:
                 limpiar()
-                print('Apuesta minima de ₡10')
+                print(f'Apuesta minima de ${apuesta_minima_temporal}')
             else:
                 num += 1
                 dinero_temporal -= apuesta
@@ -460,6 +460,7 @@ def plantarse():
             
 #Inicio del juego, con opcion de ver las instrucciones y dirigiendose a la funcion de las apuestas,
 def inicio(dato):
+    apuesta_min()
     saldo_usuario(dato)
     num = 0
     while num <=0:
@@ -500,6 +501,17 @@ def saldo_usuario(dato):
     archivo.close()
     saldo = int(saldo)
     dinero_temporal += saldo
+
+#Aqui se hara la verificacion de apuesta minima de acuerdo a lo que el archivo ajustes avanzados diga
+def apuesta_min():
+    global apuesta_minima_temporal
+    archivo = open('configuraciones_avanzadas.txt', 'r')
+    contenido = archivo.read()
+    lineas = contenido.split('\n')
+    linea_black = lineas[4]
+    dato, valor = linea_black.split(':')
+    apuesta_minima_temporal = int(valor)
+    archivo.close()
 
 #A la hora de que el usuario salga del juego, se actualizara su saldo desde este archivo automaticamente
 def saldo_recuperar(usuario):

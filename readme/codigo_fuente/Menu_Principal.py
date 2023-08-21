@@ -22,6 +22,7 @@ def verificacion_existencia():
     if len(usuarios) != 0:
         verificacion_2()
     else:
+        limpiar_pantalla()
         print('No existe ni un solo usuario activo, vaya a Registro de Usuario nuevo')
 
 #Returna una lista con todos los usuarios y contraseñas para poder verificar si son correctas
