@@ -84,39 +84,95 @@ def ver_saldo(ID,opcion):
     else:
         return saldo
 
+#Aqui se abrira el archivo y se sacara el valor para la conversion del colon
+def conversion_colon():
+    archivo = open('configuraciones_avanzadas.txt', 'r')
+    contenido = archivo.read()
+    lineas = contenido.split('\n')
+    linea_colon = lineas[0]
+    dato, valor = linea_colon.split(':')
+    archivo.close()
+    valor = int(valor)
+    return valor
+
+#Aqui se abrira el archivo y se sacara el valor para la conversion del Bitcoin
+def conversion_bitcoin():
+    archivo = open('configuraciones_avanzadas.txt', 'r')
+    contenido = archivo.read()
+    lineas = contenido.split('\n')
+    linea_colon = lineas[1]
+    dato, valor = linea_colon.split(':')
+    archivo.close()
+    valor = int(valor)
+    return valor
+
+#A la hora de depositar en colon, entrara esta funcion que llamara a la conversion y hara la escritura para tener el dinero correspondiente
+def deposito_colon(usuario):
+    colon = conversion_colon()
+    monto = float(input('Digite el monto en colones a depositar\n>>>'))
+    if monto <= 0:
+        print('Error: no puede depositar montos menores a 0, volviendo al Submenu')
+    else:
+        convertido = monto / colon
+        convertido = round(convertido,2)
+        archivo = open(os.path.join(usuario, 'saldos.txt'), 'r+')
+        monto_viejo = archivo.read()
+        monto_viejo = float(monto_viejo)
+        total = monto_viejo + convertido
+        archivo.seek(0)
+        archivo.write("{:.2f}\n".format(total)) #Bibliografia, del codigo usado
+        archivo.close()
+        limpiar_pantalla()
+        print(f'Transaccion realizada, deposito exitoso de ₡{monto}, con un tipo de cambio de {colon} x 1 dolar, tu saldo actual es de ${total}')
+
+#Aqui se almacena la funcion para hacer deposito en dolares.
+def deposito_dolar(usuario):
+    limpiar_pantalla()
+    monto = float(input('Digite el monto en dolares a depositar\n>>>'))
+    if monto <= 0:
+        print('Error: no puede depositar montos menores a 0, volviendo al Submenu')
+    else:
+        archivo = open(os.path.join(usuario, 'saldos.txt'), 'r+')
+        monto_viejo = archivo.read()
+        monto_viejo = float(monto_viejo)
+        total = monto_viejo + monto
+        archivo.seek(0)
+        archivo.write("{:.2f}\n".format(total)) #Bibliografia, del codigo usado
+        archivo.close()
+        limpiar_pantalla()
+        print(f'Transaccion realizada, deposito exitoso de ${monto}, tu saldo actual es de ${total}')
+
+#A la hora de depositar en bitcoin, entrara esta funcion que llamara a la conversion y hara la escritura para tener el dinero correspondiente
+def deposito_bitcoin(usuario):
+    bitcoin = conversion_bitcoin()
+    monto = float(input('Digite el monto en Bitcoins a depositar\n>>>'))
+    convertido = monto * bitcoin
+    convertido = round(convertido,2)
+    archivo = open(os.path.join(usuario, 'saldos.txt'), 'r+')
+    monto_viejo = archivo.read()
+    monto_viejo = float(monto_viejo)
+    total = monto_viejo + convertido
+    archivo.seek(0)
+    archivo.write("{:.2f}\n".format(total)) #Bibliografia, del codigo usado
+    archivo.close()
+    limpiar_pantalla()
+    print(f'Transaccion realizada, deposito exitoso de BTC{monto}, con un tipo de cambio de {bitcoin}, tu saldo actual es de ${total}')
+
 #Aqui se realizara las verificaciones y depositos de dinero correspondientes
 def deposito(usuario):
-    while True:
-        try:
-            dinero = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
-            if dinero == 1:
-                print('Trabajando, aun no disponible')
-                break
-            elif dinero == 2:
-                limpiar_pantalla()
-                monto = int(input('Digite el monto a depositar\n>>>'))
-                if monto <= 0:
-                    print('Error: no puede depositar montos menores a 0, volviendo al Submenu')
-                    break
-                else:
-                    archivo = open(os.path.join(usuario, 'saldos.txt'), 'r+')
-                    monto_viejo = archivo.read()
-                    monto_viejo = int(monto_viejo)
-                    total = monto_viejo + monto
-                    archivo.seek(0)
-                    archivo.write(str(total) + '\n')
-                    archivo.close()
-                    limpiar_pantalla()
-                    print(f'Transaccion realizada, deposito exitoso de ${monto}, tu saldo actual es de ${total}')
-                    break
-            elif dinero == 3:
-                print('Trabajando, aun no disponible')
-                break
-            else:
-                print('Error, digite una de las opciones anteriores')
-        except ValueError:
-            limpiar_pantalla()
-            print('Error, seleccione una de las monedas anteriores')
+    try:
+        dinero = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
+        if dinero == 1:
+            deposito_colon(usuario)
+        elif dinero == 2:
+            deposito_dolar(usuario)
+        elif dinero == 3:
+            deposito_bitcoin(usuario)
+        else:
+            print('Error, digite una de las opciones anteriores, volviendo al submenu')
+    except ValueError:
+        limpiar_pantalla()
+        print('Error, no selecciono correctamente, volviendo al Submenu')
 
 #Este es el Submenu de Juegos, aqui se podra decidir que puede jugar.
 def menu_juegos(usuario):
@@ -168,17 +224,17 @@ def retiro(ID):
     intentos = 3
     while intentos > 0:
         try:
-            retiro = int(input(f'Bienvenido a retiro, tu saldo actual actual es de {ver_saldo(ID,dato)}\n¿cuanto desea retirar?:'))
-            saldo = int(ver_saldo(ID, dato))
+            retiro = float(input(f'Bienvenido a retiro, tu saldo actual actual es de {ver_saldo(ID,dato)}\n¿cuanto desea retirar?:'))
+            saldo = float(ver_saldo(ID, dato))
             if retiro == 0:
                 print('Error, no puede retirar montos menores o iguales a 0')
             elif retiro <= saldo:
                     archivo = open(os.path.join(ID, 'saldos.txt'), 'r+')
                     monto_viejo = archivo.read()
-                    monto_viejo = int(monto_viejo)
+                    monto_viejo = float(monto_viejo)
                     monto_viejo -= retiro
                     archivo.seek(0)
-                    archivo.write(str(monto_viejo) + '\n')
+                    archivo.write("{:.2f}\n".format(monto_viejo))
                     archivo.close()
                     limpiar_pantalla()
                     print(f'Transaccion realizada, retiro exitoso de ${retiro}, tu saldo actual es de ${monto_viejo}')
@@ -191,7 +247,6 @@ def retiro(ID):
                 print(f'Error, el saldo no es suficiente para retirar ${retiro}, le quedan {intentos} intentos')
         except ValueError:
             print(f'Tiene que digitar un monto correcto, le quedan {intentos} intentos')
-
 
 
 #Fin Funciones de DreamWorldCasino
@@ -252,15 +307,6 @@ while True:
                     print('Se excedio el maximo de intentos para ingresar un ID valido, volviendo al Menu principal')
                 if usuario_creado:
                     break
-
-
-
-
-
-
-
-
-
         elif opcion == 2:
             verificacion_existencia()
         elif opcion == 3:
@@ -268,7 +314,6 @@ while True:
         elif opcion == 4:
             print('Gracias por visitar DreamWorld Casino, vuelva pronto')
             break
-
         else:
             print('*Error: Debes ingresar un número entre 1 y 4. Intente nuevamente*')  
     except ValueError:

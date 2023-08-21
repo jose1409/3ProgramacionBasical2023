@@ -1,6 +1,6 @@
-tipocambiocolones:100
-tipocambiobitcoin:400
+tipocambiocolones:533
+tipocambiobitcoin:26087
 acumuladotragamonedas:20
 minimotragamonedas:60
-minimoblackjack:20
+minimoblackjack:100
 inversionminima:15

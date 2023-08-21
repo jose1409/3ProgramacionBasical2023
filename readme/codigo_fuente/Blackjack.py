@@ -457,25 +457,31 @@ def plantarse():
         else:
             opcion = input('Usted perdio, ¿Desea jugar de nuevo? (si/no):')
             jugar_nuevamente(opcion)
-            
-#Inicio del juego, con opcion de ver las instrucciones y dirigiendose a la funcion de las apuestas,
+
+#Inicio del juego, con opcion de ver las instrucciones y dirigiendose a la funcion de las apuestas, ademas de que si no posee saldo suficiente, no podra jugar
 def inicio(dato):
     apuesta_min()
     saldo_usuario(dato)
+    global dinero_temporal
     num = 0
-    while num <=0:
-        opcion = input('Desea ver las Instrucciones? (si/no):')
-        if opcion.lower() == 'si':
-            instrucciones()
-            num +=1
-            requisito_dinero_temporal()
-        elif opcion.lower() == 'no':
-            num +=1
-            requisito_dinero_temporal()
-        else:
-            limpiar()
-            print('Digite "si" o "no", no otra estupidez')
-    saldo_recuperar(dato)
+    if dinero_temporal > apuesta_minima_temporal:
+        while num <=0:
+                opcion = input('Desea ver las Instrucciones? (si/no):')
+                if opcion.lower() == 'si':
+                    instrucciones()
+                    num +=1
+                    requisito_dinero_temporal()
+                elif opcion.lower() == 'no':
+                    num +=1
+                    requisito_dinero_temporal()
+                else:
+                    limpiar()
+                    print('Digite "si" o "no", no otra estupidez')
+        saldo_recuperar(dato)
+    else:
+        dinero_temporal = 0
+        limpiar()
+        print('Saldo insuficiente para jugar, volviendo al Submenu de Juegos')
 
 #Esta funcion sera usada cada vez que finaliza el juego, no importa si pierde, gana o empata, y su funcion sera volver al submenu de juegos o jugar nuevamente
 def jugar_nuevamente(opcion):
