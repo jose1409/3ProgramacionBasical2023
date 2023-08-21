@@ -84,8 +84,8 @@ def ver_saldo(ID,opcion):
     archivo = open(os.path.join(ID, 'saldos.txt'), 'r')
     saldo = archivo.read()
     archivo.close()
-    limpiar_pantalla()
     if opcion == 0:
+        limpiar_pantalla()
         print(f'Tu saldo actualmente es de ${saldo}, Volviendo al Submenu')
     else:
         return saldo
@@ -204,7 +204,8 @@ def menu_inicio(usuario,pin):
         try:
             opcion = int(input('1. Retirar Dinero\n2. Depositar Dinero\n3. Ver Saldo Actual\n4. Juegos en Linea\n5. Eliminar Usuario\n6. Salir\n>>>'))
             if opcion == 1:
-                retiro(usuario)
+                if retiro(usuario) == 1:
+                    break 
             elif opcion == 2:
                 deposito(usuario)
             elif opcion == 3:
@@ -227,14 +228,13 @@ def menu_inicio(usuario,pin):
 #Es posible retirar el dinero que el usuario decida sacar
 def retiro(ID):
     dato = 1
-    intentos = 3
-    while intentos > 0:
+    intentos = 0
+    while intentos < 3:
         try:
-            retiro = float(input(f'Bienvenido a retiro, tu saldo actual actual es de {ver_saldo(ID,dato)}\n¿cuanto desea retirar?:'))
-            saldo = float(ver_saldo(ID, dato))
+            retiro = float(input(f'Tu saldo actual actual es de ${ver_saldo(ID,dato)}\n¿cuanto desea retirar?:'))
             if retiro == 0:
                 print('Error, no puede retirar montos menores o iguales a 0')
-            elif retiro <= saldo:
+            elif retiro <= float(ver_saldo(ID, dato)):
                     archivo = open(os.path.join(ID, 'saldos.txt'), 'r+')
                     monto_viejo = archivo.read()
                     monto_viejo = float(monto_viejo)
@@ -243,22 +243,26 @@ def retiro(ID):
                     archivo.write("{:.2f}\n".format(monto_viejo))
                     archivo.close()
                     limpiar_pantalla()
-                    print(f'Transaccion realizada, retiro exitoso de ${retiro}, tu saldo actual es de ${monto_viejo}')
-                    break
-            elif intentos == 0:
-                print('Error, supero el numero de intentos posibles, regresando al Menu principal')
-                
+                    intentos = 3
+                    print(f'Transaccion realizada, retiro exitoso de ${retiro}, tu saldo actual es de ${monto_viejo}')  
+                    break        
             else:
-                intentos -= 1
-                print(f'Error, el saldo no es suficiente para retirar ${retiro}, le quedan {intentos} intentos')
+                intentos += 1
+                if intentos == 3:
+                    limpiar_pantalla()
+                    print('Supero el numero de intentos maximo, regresando al Menu Principal')
+                    return dato
+                limpiar_pantalla()
+                print(f'Error, el saldo no es suficiente para retirar ${retiro}, intente nuevamente')
         except ValueError:
-            print(f'Tiene que digitar un monto correcto, le quedan {intentos} intentos')
+            intentos += 1
+            limpiar_pantalla()
+            print(f'Tiene que digitar un monto correcto')
 
 
 #Fin Funciones de DreamWorldCasino
-
-
 #Inicio Funciones Deposito Obligatorio
+
 
 #Aqui se hara una funcion para retornar el minimo del deposito cada vez que sea necesario, siguiendo el mismo principio siempre que sea necesario
 def minimo_deposito():
