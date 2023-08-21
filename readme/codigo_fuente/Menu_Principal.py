@@ -64,14 +64,20 @@ def verificacion_2():
             i += 1
             if verificar_id(id_pin) == True:
                 while j < 3:
+                    i = 3
                     pin_id = getpass('Ingrese la contraseña:')
                     if verificar_pin(pin_id) == True:
                         j = 3
-                        i = 3
                         limpiar_pantalla()
                         print(f'Bienvenido al sistema señor(a) {id_pin}')
                         menu_inicio(id_pin,pin_id)
+                    elif j == 2:
+                        limpiar_pantalla()
+                        print('Se excedió el máximo de intentos para ingresar su PIN, volviendo al menú principal')
                     j += 1
+            elif i == 3:
+                limpiar_pantalla()
+                print('Se excedió el máximo de intentos para ingresar su ID, volviendo al menú principal')
 
 #Funcion que mostrara el saldo del usuario registrado
 def ver_saldo(ID,opcion):
@@ -252,6 +258,87 @@ def retiro(ID):
 #Fin Funciones de DreamWorldCasino
 
 
+#Inicio Funciones Deposito Obligatorio
+
+#Aqui se hara una funcion para retornar el minimo del deposito cada vez que sea necesario, siguiendo el mismo principio siempre que sea necesario
+def minimo_deposito():
+    archivo = open('configuraciones_avanzadas.txt', 'r')
+    contenido = archivo.read()
+    lineas = contenido.split('\n')
+    linea_colon = lineas[5]
+    dato, valor = linea_colon.split(':')
+    archivo.close()
+    valor = int(valor)
+    return valor
+
+#Aqui sera el menu del deposito obligatorio, sera requisito fundamental pasar aqui y depositar += 15 dolares para terminar el registro de usuario
+def deposito_obligatorio():
+    min = minimo_deposito()
+    print(f'Como ultimo paso, necesitamos un deposito minimo de ${minimo_deposito()}')
+    intentos = 0
+    while intentos < 3:
+        try:
+            opcion = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
+            #Siempre el valor se compara con el minimo de deposito para asi no permitir depositar menos de lo permitido
+            if opcion == 1:
+                valor = depo_colon()
+                if valor >= minimo_deposito():
+                    return valor
+                else:
+                    intentos += 1
+                    print(f'Error: no puede depositar montos menores a ${minimo_deposito()}, intentelo nuevamente')
+            elif opcion == 2:
+                valor = depo_dolar()
+                if valor >= minimo_deposito():
+                    return valor
+                else:
+                    intentos += 1
+                    print(f'Error: no puede depositar montos menores a ${minimo_deposito()}, intentelo nuevamente')
+            elif opcion == 3:
+                valor = depo_bitcoin()
+                if valor >= minimo_deposito():
+                    return valor
+                else:
+                    intentos += 1
+                    print(f'Error: no puede depositar montos menores a ${minimo_deposito()}, intentelo nuevamente')
+            else:
+                print('Error, digite una de las opciones anteriores, volviendo al submenu')
+            if intentos == 3:
+                print('Se excedió el máximo de intentos para depositar el mínimo de dinero requerido, volviendo al menú principal')
+
+            
+            
+        except ValueError:
+            intentos += 1
+            limpiar_pantalla()
+            print('Error, no selecciono correctamente')
+
+#Aqui simplemente se tomara el monto y lo retornara, para que se vea mas bonito
+def depo_dolar():
+    limpiar_pantalla()
+    monto = float(input('Digite el monto en dolares a depositar\n>>>'))
+    return monto
+
+#Aqui se hara la conversion del colon y el retorno del valor en dolares
+def depo_colon():
+    limpiar_pantalla()
+    monto = float(input(f'Digite el monto en colones a depositar, con un tipo de cambio de {conversion_colon()}\n>>>'))
+    monto /= conversion_colon()
+    monto = round(monto,2)
+    return monto
+
+#Aqui se hara la conversion del bitcoin y el retorno del valor en dolares
+def depo_bitcoin():
+    limpiar_pantalla()
+    monto = float(input(f'Digite el monto en BTC a depositar, con un tipo de cambio de {conversion_bitcoin()}\n>>>'))
+    monto *= conversion_bitcoin()
+    monto = round(monto,2)
+    return monto
+    
+
+#Fin Funciones Deposito Obligatorio
+
+
 # Menu Principal
 os.chdir('./readme/')
 while True:
@@ -283,21 +370,29 @@ while True:
                             else:
                                 PIN_confirmacion = getpass('Ingrese nuevamente su PIN para confirmacion')
                                 if PIN == PIN_confirmacion:
-                                    time.sleep(0.5)
                                     limpiar_pantalla()
-                                    print('El PIN ha sido creado exitosamente')
-                                    os.mkdir(ID)
-                                    print(f"el ID {ID} ha sido creado, volviendo al Menu Principal")
-                                    archivo = open(os.path.join(ID, 'saldos.txt'), 'w')
-                                    archivo.write(str(0) + '\n')
-                                    archivo.close()
-                                    #Modos de lectura en BibliotecaOS.py
-                                    archivo = open('usuarios_pines.txt', 'a')
-                                    archivo.write(f'{ID}\n')
-                                    archivo.write(f'{PIN}\n')
-                                    archivo.close()
-                                    usuario_creado = True
-                                    break
+                                    monto = deposito_obligatorio()
+                                    if monto == None:
+                                        usuario_creado = True
+                                        break
+                                    elif monto >= minimo_deposito():
+                                        time.sleep(0.5)
+                                        limpiar_pantalla()
+                                        print('El PIN ha sido creado exitosamente')
+                                        os.mkdir(ID)
+                                        print(f"el ID {ID} ha sido creado, volviendo al Menu Principal")
+                                        archivo = open(os.path.join(ID, 'saldos.txt'), 'w')
+                                        archivo.write("{:.2f}\n".format(monto))
+                                        archivo.close()
+                                        #Modos de lectura en BibliotecaOS.py
+                                        archivo = open('usuarios_pines.txt', 'a')
+                                        archivo.write(f'{ID}\n')
+                                        archivo.write(f'{PIN}\n')
+                                        archivo.close()
+                                        usuario_creado = True
+                                        break
+                                    else:
+                                        break
                                 else:
                                     print('Error: El PIN de confirmacion no coincide, intente nuevamente')
                 #Si el usuario supera los intentos, se devuelve al menu principal                                               
@@ -317,4 +412,5 @@ while True:
         else:
             print('*Error: Debes ingresar un número entre 1 y 4. Intente nuevamente*')  
     except ValueError:
+        limpiar_pantalla()
         print('*Error: Debes ingresar un número entero. Intente nuevamente*')
