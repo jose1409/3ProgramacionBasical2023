@@ -8,126 +8,150 @@ import Blackjack
 def limpiar_pantalla():
     os.system('cls')
 
+
 #De aqui hacia abajo hay funciones de DreamWorldCasino hasta nuevo comentario avisando de finalizacion
+
 
 #Si se selecciona DreamWorldCasino, si no existiese ningun tipo de usuario, sera devuelto al Menu
 def verificacion_existencia():
-    dato = 'ID'
     usuarios = []
     cantidad_carpetas = os.listdir()
     for carpeta in cantidad_carpetas:
         if os.path.isdir(carpeta) and carpeta != 'codigo_fuente':
             usuarios.append(carpeta)
     if len(usuarios) != 0:
-        verificacion_2(dato)
+        verificacion_2()
     else:
         print('No existe ni un solo usuario activo, vaya a Registro de Usuario nuevo')
 
-#Aqui se sacaran los usuarios y contraseñas para ser guardadas y verificadas.
-def lectura_usuarios(opcion,dato):
+#Returna una lista con todos los usuarios y contraseñas para poder verificar si son correctas
+def obtener_datos():
     verificar = []
     archivo = open('usuarios_pines.txt', 'r')
     usuarios = archivo.read().splitlines()
-    for i in range(0,len(usuarios),2):
+    for i in range(1,len(usuarios),2):
         usuario = usuarios[i]
         pin = usuarios[i+1]
         verificar.append((usuario,pin))
     archivo.close()
-    if dato == 'ID':
-        for usuario,pin in verificar:
-            if usuario == opcion:
-                dato = 'PIN'
-                verificacion_2(dato)
-            elif usuario != opcion:
-                limpiar_pantalla()
-                print('Error: ID no valido, intente nuevamente')
-    else:
-        for usuario,pin in verificar:
-            if pin == opcion:
-                limpiar_pantalla()
-                print(f'Bienvenido al sistema señor {usuario}')
-                menu_inicio(usuario,pin)
-            else:
-                limpiar_pantalla()
-                print('Error: PIN no valido, intente nuevamente')
-  
-#Si pasa la primer verificacion, se verificara que ingrese un ID y usuario correcto con 3 intentos
-def verificacion_2(dato):
-    if dato == 'ID':
-        for i in range(3):
-            id_pin = input(f'Ingrese su {dato}:')
-            lectura_usuarios(id_pin,dato)
-            if i == 2 and dato == 'ID':
-                print('Se excedió el máximo de intentos para ingresar su ID, volviendo al menú principal')
+    return verificar
 
-    else:
-        for i in range(3):
-            id_pin = getpass(f'Ingrese su {dato}:')
-            lectura_usuarios(id_pin,dato)
-            if i == 2:
-                print('Se excedió el máximo de intentos para ingresar su ID, volviendo al menú principal')
+#Verifica si el usuario es correcto
+def verificar_id(id):
+    temp = False
+    verificar = obtener_datos()
+    for usuario,pin in verificar:
+        if usuario == id:
+            temp = True
+    return temp
+
+#Verifica si el Pin es correcto
+def verificar_pin(contra):
+    temp = False
+    verificar = obtener_datos()
+    for usuario,pin in verificar:
+        if pin == contra:
+            temp = True
+    return temp
+
+#Si pasa la primer verificacion, se verificara que ingrese un ID y usuario correcto con 3 intentos
+def verificacion_2():
+        i = 0
+        j = 0
+        while i < 3:
+            id_pin = input('Ingrese su ID:')
+            i += 1
+            if verificar_id(id_pin) == True:
+                while j < 3:
+                    pin_id = getpass('Ingrese la contraseña:')
+                    if verificar_pin(pin_id) == True:
+                        j = 3
+                        i = 3
+                        limpiar_pantalla()
+                        print(f'Bienvenido al sistema señor(a) {id_pin}')
+                        menu_inicio(id_pin,pin_id)
+                    j += 1
 
 #Funcion que mostrara el saldo del usuario registrado
-def ver_saldo(ID):
+def ver_saldo(ID,opcion):
     archivo = open(os.path.join(ID, 'saldos.txt'), 'r')
     saldo = archivo.read()
     archivo.close()
     limpiar_pantalla()
-    return print(f'Tu saldo actualmente es de ${saldo}, Volviendo al Submenu')
+    if opcion == 0:
+        print(f'Tu saldo actualmente es de ${saldo}, Volviendo al Submenu')
+    else:
+        return saldo
 
+#Aqui se realizara las verificaciones y depositos de dinero correspondientes
 def deposito(usuario):
     while True:
-        dinero = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
-        if dinero == 1:
-            print('Trabajando, aun no disponible')
-            break
-        elif dinero == 2:
-            limpiar_pantalla()
-            monto = int(input('Digite el monto a depositar\n>>>'))
-            if monto <= 0:
-                print('Error: no puede depositar montos menores a 0')
-            else:
-                archivo = open(os.path.join(usuario, 'saldos.txt'), 'w')
-                archivo.write(str(monto) + '\n')
-                archivo.close()
-                limpiar_pantalla()
-                print(f'Transaccion realizada, deposito exitoso de ${monto}, volviendo al Submenu')
+        try:
+            dinero = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
+            if dinero == 1:
+                print('Trabajando, aun no disponible')
                 break
-        elif dinero == 3:
-            print('Trabajando, aun no disponible')
+            elif dinero == 2:
+                limpiar_pantalla()
+                monto = int(input('Digite el monto a depositar\n>>>'))
+                if monto <= 0:
+                    print('Error: no puede depositar montos menores a 0, volviendo al Submenu')
+                    break
+                else:
+                    archivo = open(os.path.join(usuario, 'saldos.txt'), 'r+')
+                    monto_viejo = archivo.read()
+                    monto_viejo = int(monto_viejo)
+                    total = monto_viejo + monto
+                    archivo.seek(0)
+                    archivo.write(str(total) + '\n')
+                    archivo.close()
+                    limpiar_pantalla()
+                    print(f'Transaccion realizada, deposito exitoso de ${monto}, tu saldo actual es de ${total}')
+                    break
+            elif dinero == 3:
+                print('Trabajando, aun no disponible')
+                break
+            else:
+                print('Error, digite una de las opciones anteriores')
+        except ValueError:
+            limpiar_pantalla()
+            print('Error, seleccione una de las monedas anteriores')
+
+#Este es el Submenu de Juegos, aqui se podra decidir que puede jugar.
+def menu_juegos(usuario):
+    limpiar_pantalla()
+    while True:
+        juego = int(input('1- Blackjack\n2- Tragamonedas\n3- Salir\n>>>'))
+        if juego == 1:
+            Blackjack.inicio(usuario)
+        elif juego == 2:
+            print('Trabajando')
+        elif juego == 3:
+            limpiar_pantalla()
+            print('Volviendo al Submenu')
             break
         else:
-            print('Error, digite una de las opciones anteriores')
+            limpiar_pantalla()
+            print('Error: Digite una de las opciones anteriores, volviendo al menu de juegos')
+
 #Aqui estara un usuario registrado, disponible todas las opciones que desee hacer o incluso jugar
 def menu_inicio(usuario,pin):
+    dato = 0
     while True:
         try:
             opcion = int(input('1. Retirar Dinero\n2. Depositar Dinero\n3. Ver Saldo Actual\n4. Juegos en Linea\n5. Eliminar Usuario\n6. Salir\n>>>'))
             if opcion == 1:
-                print('Trabajando')
+                retiro(usuario)
             elif opcion == 2:
                 deposito(usuario)
-
             elif opcion == 3:
-                ver_saldo(usuario)
+                ver_saldo(usuario,dato)
             elif opcion == 4:
-                limpiar_pantalla()
-                while True:
-                    juego = int(input('1- Blackjack\n2- Tragamonedas\n3- Salir\n>>>'))
-                    if juego == 1:
-                        Blackjack.inicio(usuario)
-                    elif juego == 2:
-                        print('Trabajando')
-                    elif juego == 3:
-                        limpiar_pantalla()
-                        print('Volviendo al Submenu')
-                        break
-                    else:
-                        limpiar_pantalla()
-                        print('Error: Digite una de las opciones anteriores, volviendo al menu de juegos')
+                menu_juegos(usuario)
             elif opcion == 5:
                 print('Trabajando')
             elif opcion == 6:
+                limpiar_pantalla()
                 print('Gracias por acompañarnos, volviendo al Menu Principal')
                 break
             else:
@@ -136,6 +160,38 @@ def menu_inicio(usuario,pin):
         except ValueError:
             limpiar_pantalla()
             print('Error: Digite un numero')
+
+#Es posible retirar el dinero que el usuario decida sacar
+def retiro(ID):
+    dato = 1
+    intentos = 3
+    while intentos > 0:
+        try:
+            retiro = int(input(f'Bienvenido a retiro, tu saldo actual actual es de {ver_saldo(ID,dato)}\n¿cuanto desea retirar?:'))
+            saldo = int(ver_saldo(ID, dato))
+            if retiro == 0:
+                print('Error, no puede retirar montos menores o iguales a 0')
+            elif retiro <= saldo:
+                    archivo = open(os.path.join(ID, 'saldos.txt'), 'r+')
+                    monto_viejo = archivo.read()
+                    monto_viejo = int(monto_viejo)
+                    monto_viejo -= retiro
+                    archivo.seek(0)
+                    archivo.write(str(monto_viejo) + '\n')
+                    archivo.close()
+                    limpiar_pantalla()
+                    print(f'Transaccion realizada, retiro exitoso de ${retiro}, tu saldo actual es de ${monto_viejo}')
+                    break
+            elif intentos == 0:
+                print('Error, supero el numero de intentos posibles, regresando al Menu principal')
+                
+            else:
+                intentos -= 1
+                print(f'Error, el saldo no es suficiente para retirar ${retiro}, le quedan {intentos} intentos')
+        except ValueError:
+            print(f'Tiene que digitar un monto correcto, le quedan {intentos} intentos')
+
+
 
 #Fin Funciones de DreamWorldCasino
 

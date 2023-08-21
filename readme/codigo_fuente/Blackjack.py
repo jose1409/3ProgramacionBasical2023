@@ -24,7 +24,6 @@ def requisito_dinero_temporal():
             vaciar_lista()
             print(f'Tu saldo es de ${dinero_temporal}')
             apuesta = int(input('¿Cuanto desea apostar?'))
-                #Entrar a la carpeta de usuario y saldos, verificar que posea el dinero suficiente(Modificaciones)
             if apuesta > dinero_temporal:
                 limpiar()
                 print('Dinero insuficiente, intente nuevamente')
