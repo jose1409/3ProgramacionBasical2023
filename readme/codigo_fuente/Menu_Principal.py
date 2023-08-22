@@ -3,7 +3,7 @@ import time
 from getpass import getpass
 from configuracion_avanzada import menu_configuracion_avanzada
 import Blackjack
-
+import Tragaperras
 #Funcion usada para limpiar la terminal cuando se sobre cargue mucho de inforamcion
 def limpiar_pantalla():
     os.system('cls')
@@ -187,8 +187,8 @@ def menu_juegos(usuario):
         juego = int(input('1- Blackjack\n2- Tragamonedas\n3- Salir\n>>>'))
         if juego == 1:
             Blackjack.inicio(usuario)
-        elif juego == 2:
-            print('Trabajando')
+        if juego == 2:
+            Tragaperras.inicio(usuario) 
         elif juego == 3:
             limpiar_pantalla()
             print('Volviendo al Submenu')
