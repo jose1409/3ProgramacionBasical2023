@@ -12,7 +12,7 @@ def limpiar_pantalla():
 #De aqui hacia abajo hay funciones de DreamWorldCasino hasta nuevo comentario avisando de finalizacion
 
 
-#Si se selecciona DreamWorldCasino, si no existiese ningun tipo de usuario, sera devuelto al Menu
+#Verifica la existencia de usuarios y redirige a verificación_2() si existen, de lo contrario muestra un mensaje
 def verificacion_existencia():
     usuarios = []
     cantidad_carpetas = os.listdir()
@@ -25,7 +25,7 @@ def verificacion_existencia():
         limpiar_pantalla()
         print('No existe ni un solo usuario activo, vaya a Registro de Usuario nuevo')
 
-#Returna una lista con todos los usuarios y contraseñas para poder verificar si son correctas
+#Obtiene una lista de usuarios y contraseñas desde un archivo
 def obtener_datos():
     verificar = []
     archivo = open('usuarios_pines.txt', 'r')
@@ -37,7 +37,7 @@ def obtener_datos():
     archivo.close()
     return verificar
 
-#Verifica si el usuario es correcto
+#Verifica si un usuario existe en los datos obtenidos
 def verificar_id(id):
     temp = False
     verificar = obtener_datos()
@@ -46,7 +46,7 @@ def verificar_id(id):
             temp = True
     return temp
 
-#Verifica si el Pin es correcto
+#Verifica si un PIN es correcto en los datos obtenidos
 def verificar_pin(contra):
     temp = False
     verificar = obtener_datos()
@@ -79,7 +79,7 @@ def verificacion_2():
                 limpiar_pantalla()
                 print('Se excedió el máximo de intentos para ingresar su ID, volviendo al menú principal')
 
-#Funcion que mostrara el saldo del usuario registrado
+#Muestra el saldo del usuario
 def ver_saldo(ID,opcion):
     archivo = open(os.path.join(ID, 'saldos.txt'), 'r')
     saldo = archivo.read()
@@ -90,7 +90,7 @@ def ver_saldo(ID,opcion):
     else:
         return saldo
 
-#Aqui se abrira el archivo y se sacara el valor para la conversion del colon
+#Obtiene el valor de conversión para moneda local (colón)
 def conversion_colon():
     archivo = open('configuraciones_avanzadas.txt', 'r')
     contenido = archivo.read()
@@ -101,7 +101,7 @@ def conversion_colon():
     valor = int(valor)
     return valor
 
-#Aqui se abrira el archivo y se sacara el valor para la conversion del Bitcoin
+#Obtiene el valor de conversión para Bitcoin
 def conversion_bitcoin():
     archivo = open('configuraciones_avanzadas.txt', 'r')
     contenido = archivo.read()
@@ -112,7 +112,7 @@ def conversion_bitcoin():
     valor = int(valor)
     return valor
 
-#A la hora de depositar en colon, entrara esta funcion que llamara a la conversion y hara la escritura para tener el dinero correspondiente
+#Realiza un depósito en dólares y actualiza el saldo del usuario
 def deposito_colon(usuario):
     colon = conversion_colon()
     monto = float(input('Digite el monto en colones a depositar\n>>>'))
@@ -131,7 +131,7 @@ def deposito_colon(usuario):
         limpiar_pantalla()
         print(f'Transaccion realizada, deposito exitoso de ₡{monto}, con un tipo de cambio de {colon} x 1 dolar, tu saldo actual es de ${total}')
 
-#Aqui se almacena la funcion para hacer deposito en dolares.
+#Realiza un depósito en dólares y actualiza el saldo del usuario
 def deposito_dolar(usuario):
     limpiar_pantalla()
     monto = float(input('Digite el monto en dolares a depositar\n>>>'))
@@ -148,7 +148,7 @@ def deposito_dolar(usuario):
         limpiar_pantalla()
         print(f'Transaccion realizada, deposito exitoso de ${monto}, tu saldo actual es de ${total}')
 
-#A la hora de depositar en bitcoin, entrara esta funcion que llamara a la conversion y hara la escritura para tener el dinero correspondiente
+#Realiza un depósito en Bitcoin y actualiza el saldo del usuario
 def deposito_bitcoin(usuario):
     bitcoin = conversion_bitcoin()
     monto = float(input('Digite el monto en Bitcoins a depositar\n>>>'))
@@ -164,7 +164,7 @@ def deposito_bitcoin(usuario):
     limpiar_pantalla()
     print(f'Transaccion realizada, deposito exitoso de BTC{monto}, con un tipo de cambio de {bitcoin}, tu saldo actual es de ${total}')
 
-#Aqui se realizara las verificaciones y depositos de dinero correspondientes
+#Permite al usuario realizar un depósito en diferentes monedas
 def deposito(usuario):
     try:
         dinero = int(input('1. Colones\n2. Dolares\n3. Bitcoin\nEn que moneda desea depositar:'))
@@ -197,7 +197,7 @@ def menu_juegos(usuario):
             limpiar_pantalla()
             print('Error: Digite una de las opciones anteriores, volviendo al menu de juegos')
 
-#Aqui estara un usuario registrado, disponible todas las opciones que desee hacer o incluso jugar
+#Menú principal para un usuario registrado, permite realizar diversas operaciones y juegos
 def menu_inicio(usuario,pin):
     dato = 0
     while True:
@@ -225,7 +225,7 @@ def menu_inicio(usuario,pin):
             limpiar_pantalla()
             print('Error: Digite un numero')
 
-#Es posible retirar el dinero que el usuario decida sacar
+#Función para realizar retiros de dinero del saldo del usuario
 def retiro(ID):
     dato = 1
     intentos = 0
@@ -264,7 +264,7 @@ def retiro(ID):
 #Inicio Funciones Deposito Obligatorio
 
 
-#Aqui se hara una funcion para retornar el minimo del deposito cada vez que sea necesario, siguiendo el mismo principio siempre que sea necesario
+#Función que obtiene el valor mínimo de depósito desde el archivo de configuraciones.
 def minimo_deposito():
     archivo = open('configuraciones_avanzadas.txt', 'r')
     contenido = archivo.read()
@@ -275,7 +275,7 @@ def minimo_deposito():
     valor = int(valor)
     return valor
 
-#Aqui sera el menu del deposito obligatorio, sera requisito fundamental pasar aqui y depositar += 15 dolares para terminar el registro de usuario
+#Función que guía al usuario a realizar un depósito obligatorio antes de finalizar el registro.
 def deposito_obligatorio():
     min = minimo_deposito()
     print(f'Como ultimo paso, necesitamos un deposito minimo de ${minimo_deposito()}')
@@ -317,13 +317,13 @@ def deposito_obligatorio():
             limpiar_pantalla()
             print('Error, no selecciono correctamente')
 
-#Aqui simplemente se tomara el monto y lo retornara, para que se vea mas bonito
+#Función que solicita el monto en dólares a depositar y lo retorna.
 def depo_dolar():
     limpiar_pantalla()
     monto = float(input('Digite el monto en dolares a depositar\n>>>'))
     return monto
 
-#Aqui se hara la conversion del colon y el retorno del valor en dolares
+#Función que realiza la conversión de colones a dólares y retorna el valor.
 def depo_colon():
     limpiar_pantalla()
     monto = float(input(f'Digite el monto en colones a depositar, con un tipo de cambio de {conversion_colon()}\n>>>'))
@@ -331,7 +331,7 @@ def depo_colon():
     monto = round(monto,2)
     return monto
 
-#Aqui se hara la conversion del bitcoin y el retorno del valor en dolares
+#Función que realiza la conversión de bitcoins a dólares y retorna el valor.
 def depo_bitcoin():
     limpiar_pantalla()
     monto = float(input(f'Digite el monto en BTC a depositar, con un tipo de cambio de {conversion_bitcoin()}\n>>>'))
