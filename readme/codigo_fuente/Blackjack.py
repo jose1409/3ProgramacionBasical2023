@@ -23,7 +23,7 @@ def requisito_dinero_temporal():
         try:
             vaciar_lista()
             print(f'Tu saldo es de ${dinero_temporal}')
-            apuesta = int(input('¿Cuanto desea apostar?'))
+            apuesta = float(input('¿Cuanto desea apostar?'))
             if apuesta > dinero_temporal:
                 limpiar()
                 print('Dinero insuficiente, intente nuevamente')
@@ -505,7 +505,7 @@ def saldo_usuario(dato):
     archivo = open(os.path.join(dato, 'saldos.txt'), 'r')
     saldo = archivo.read()
     archivo.close()
-    saldo = int(saldo)
+    saldo = float(saldo)
     dinero_temporal += saldo
 
 #Aqui se hara la verificacion de apuesta minima de acuerdo a lo que el archivo ajustes avanzados diga
@@ -523,5 +523,6 @@ def apuesta_min():
 def saldo_recuperar(usuario):
     dinero_temporal
     archivo = open(os.path.join(usuario, 'saldos.txt'), 'w')
-    archivo.write(str(dinero_temporal) + '\n')
-    archivo.close()
+    archivo.seek(0)
+    archivo.write("{:.2f}\n".format(dinero_temporal))
+    archivo.close
