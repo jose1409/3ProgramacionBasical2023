@@ -98,7 +98,7 @@ def conversion_colon():
     linea_colon = lineas[0]
     dato, valor = linea_colon.split(':')
     archivo.close()
-    valor = int(valor)
+    valor = float(valor)
     return valor
 
 #Obtiene el valor de conversión para Bitcoin
@@ -109,7 +109,7 @@ def conversion_bitcoin():
     linea_colon = lineas[1]
     dato, valor = linea_colon.split(':')
     archivo.close()
-    valor = int(valor)
+    valor = float(valor)
     return valor
 
 #Realiza un depósito en dólares y actualiza el saldo del usuario
@@ -272,7 +272,7 @@ def minimo_deposito():
     linea_colon = lineas[5]
     dato, valor = linea_colon.split(':')
     archivo.close()
-    valor = int(valor)
+    valor = float(valor)
     return valor
 
 #Función que guía al usuario a realizar un depósito obligatorio antes de finalizar el registro.
